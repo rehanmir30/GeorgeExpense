@@ -5,6 +5,8 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:get/get.dart';
 
+import '../../Controllers/LocalizationController.dart';
+import 'package:expense/custom_widget/MyAlertDialog.dart';
 import '../../widgets/background.dart';
 import 'ForgotPassword.dart';
 
@@ -32,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Welcome back 😇",
+                  "welcome".tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                 ),
                 Expanded(
@@ -54,8 +56,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusedBorder: OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
-                            labelText: "Email",
+                            labelText: "email".tr,
                             labelStyle: TextStyle(color: Colors.black)),
+                        validator: (email){
+                          if(email==null || email.isEmpty){
+                            return "emailrequired".tr;
+                          }
+                        },
                       ),
                       TextFormField(
                         controller: passController,
@@ -71,15 +78,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusedBorder: OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
-                            labelText: "Password",
+                            labelText: "password".tr,
                             labelStyle: TextStyle(color: Colors.black)),
+                        validator: (password){
+                          if(password==null || password.isEmpty){
+                            return "passwordrequired".tr;
+                          }
+                        },
                       ).marginOnly(top: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              Text("Show Password"),
+                              Text("showPassword".tr),
                               Switch(
                                 value: showPassword,
                                 activeColor: Colors.black,
@@ -96,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: (){
                                 Get.to(ForgotPassword(),transition: Transition.downToUp);
                               },
-                              child: Text("Forgot Password?"))
+                              child: Text("forgotPassword".tr,softWrap: true,))
                         ],
                       ),
                       InkWell(
@@ -110,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(10)),
                           child: Text(
-                            "Login",
+                            "login".tr,
                             style: TextStyle(color: Colors.white),
                           ).marginSymmetric(vertical: 14),
                         ),
@@ -119,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "New to our community?",
+                            "newtoCommunity".tr,
                             style: TextStyle(color: Colors.black),
                           ),
                           InkWell(
@@ -127,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Get.to(SignUpScreen(),transition: Transition.zoom);
                             },
                             child: Text(
-                              " Signup now",
+                              "signupNow".tr,
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -144,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: MediaQuery.of(context).size.width * 0.2,
                             color: Colors.black,
                           ),
-                          Text("or continue with"),
+                          Text("continueWith".tr),
                           Container(
                             height: 1,
                             width: MediaQuery.of(context).size.width * 0.2,
@@ -153,12 +165,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ).marginOnly(top: 30),
                       SignInButton(
+                        text: "googleSignIn".tr,
                         Buttons.Google,
                         onPressed: () {},
-                      ).marginOnly(top: 30)
+                      ).marginOnly(top: 30),
+
+                      GetBuilder<Localization>(builder: (controller) {
+                        return InkWell(
+                            onTap: (){
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return MyAlertDialog();
+                                },
+                              );
+                            },
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(controller.dropdownValue['name'].toString(),style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),Icon(Icons.arrow_drop_down_sharp,color: Colors.black,size: 50,)],));
+                      },),
+
                     ],
                   ),
                 ),
+
+
               ],
             ).marginSymmetric(horizontal: 20, vertical: 10)
           ],

@@ -35,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Column(
             children: [
               Text(
-                "Join our community 😃",
+                "joinOurCommunity".tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
               ),
               Expanded(child: Column(
@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         focusedBorder: OutlineInputBorder(
                           // borderSide: BorderSide.none,
                         ),
-                        labelText: "Name",
+                        labelText: "name".tr,
                         labelStyle: TextStyle(color: Colors.black)),
                   ).marginOnly(top: 12),
                   TextFormField(
@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         focusedBorder: OutlineInputBorder(
                           // borderSide: BorderSide.none,
                         ),
-                        labelText: "Email",
+                        labelText: "email".tr,
                         labelStyle: TextStyle(color: Colors.black)),
                   ).marginOnly(top: 8),
                   TextFormField(
@@ -89,7 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         focusedBorder: OutlineInputBorder(
                           // borderSide: BorderSide.none,
                         ),
-                        labelText: "Password",
+                        labelText: "password".tr,
                         labelStyle: TextStyle(color: Colors.black)),
                   ).marginOnly(top: 8),
                   TextFormField(
@@ -107,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         focusedBorder: OutlineInputBorder(
                           // borderSide: BorderSide.none,
                         ),
-                        labelText: "Confirm Password",
+                        labelText: "confirmPassword".tr,
                         labelStyle: TextStyle(color: Colors.black)),
                   ).marginOnly(top: 8),
                   Container(
@@ -117,7 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(10)),
                     child: Text(
-                      "Signup now",
+                      "signupNow".tr,
                       style: TextStyle(color: Colors.white),
                     ).marginSymmetric(vertical: 14),
                   ).marginOnly(top: 20),
@@ -125,15 +125,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Already a member?",
+                        "alreadyAMember".tr,
                         style: TextStyle(color: Colors.black),
                       ),
+                      SizedBox(width: 10,),
                       InkWell(
                         onTap: (){
                           Get.back();
                         },
                         child: Text(
-                          " Sign in instead",
+                          "SignInInstead".tr,
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -150,7 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         width: MediaQuery.of(context).size.width * 0.2,
                         color: Colors.black,
                       ),
-                      Text("or continue with"),
+                      Text("continueWith".tr),
                       Container(
                         height: 1,
                         width: MediaQuery.of(context).size.width * 0.2,
@@ -159,6 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ).marginOnly(top: 30),
                   SignInButton(
+                    text: "googleSignIn".tr,
                     Buttons.Google,
                     onPressed: () {},
                   ).marginOnly(top: 30)

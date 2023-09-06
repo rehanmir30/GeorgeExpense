@@ -25,7 +25,22 @@ class LocalizationTranslator extends Translations{
       "login":"Login",
       "newtoCommunity":"New to our community?",
       "signupNow":" Signup now",
-      "continueWith":"or continue with"
+      "continueWith":"or continue with",
+      "googleSignIn":"Sign in with Google",
+
+      //Sign Up Screen
+      "joinOurCommunity":"Join our community 😃",
+      "name":"Name",
+      // "email":"Email",
+      // "password":"Password",
+      "confirmPassword":"Confirm Password",
+      // "signupNow": "Signup now",
+      "alreadyAMember":"Already a member",
+      "SignInInstead":"Sign in instead",
+      // "continueWith":"or continue with",
+      // "googleSignIn":"Sign in with Google",
+
+
 
     },
 
@@ -43,11 +58,26 @@ class LocalizationTranslator extends Translations{
       "passwordrequired":"Se requiere contraseña",
       "passwordLengtherror":"La contraseña debe tener más de 6 caracteres.",
       "showPassword":"Mostrar contraseña",
-      "forgotPassword":"Has olvidado tu contraseña",
+      "forgotPassword":"contraseña olvidada",
       "login":"Acceso",
       "newtoCommunity":"Nueva en nuestra comunidad?",
       "signupNow":" Regístrate ahora",
-      "continueWith":"o continuar con"
+      "continueWith":"o continuar con",
+      "googleSignIn":"Inicia sesión con Google",
+
+
+      //Sign Up Screen
+  "joinOurCommunity":"Únete a nuestra comunidad 😃",
+  "name":"Nombre",
+  // "email":"Email",
+  // "password":"Password",
+  "confirmPassword":"confirmar Contraseña",
+  // "signupNow": "Signup now",
+  "alreadyAMember":"Ya eres usuario",
+  "SignInInstead":"Inicie sesión en su lugar",
+// "continueWith":"or continue with",
+// "googleSignIn":"Sign in with Google",
+
     },
 
   };
