@@ -2,6 +2,8 @@ import 'package:expense/ui/Splash.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'constants/LocalizationTranslator.dart';
+
 void main() {
   runApp(const ExpenseApp());
 }
@@ -17,6 +19,8 @@ class _ExpenseAppState extends State<ExpenseApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "Geoweb Expense",
+      debugShowCheckedModeBanner: false,
+      translations: LocalizationTranslator(),
       home: SplashScreen(),
     );
   }
