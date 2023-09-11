@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get:
   flutter_signin_button: ^2.0.0
+  d_chart: ^2.6.2
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,30 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/AnimalIcon/
+    - assets/images/BabyIcon/
+    - assets/images/BusinessIcon/
+    - assets/images/CarIcon/
+    - assets/images/EntertainmentIcon/
+    - assets/images/FamilyIcon/
+    - assets/images/FinanceIcon/
+    - assets/images/FoodAndDrinksIcon/
+    - assets/images/GymIcon/
+    - assets/images/HealthCareIcon/
+    - assets/images/HomeIcon/
+    - assets/images/ITComputerIcons/
+    - assets/images/MakeupIcon/
+    - assets/images/RestaurantIcon/
+    - assets/images/RopaClothingIcon/
+    - assets/images/ServicesIcon/
+    - assets/images/ShoppingIcon/
+    - assets/images/SportsIcon/
+    - assets/images/StatisticsIcon/
+    - assets/images/StudiesEducationIcon/
+    - assets/images/SubscriptionIcon/
+    - assets/images/TransportIcon/
+    - assets/images/UsersIcon/
+    - assets/images/VacationIcon/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

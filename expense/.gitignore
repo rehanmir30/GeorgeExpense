@@ -9,6 +9,7 @@
 .history
 .svn/
 migrate_working_dir/
+./expense/lib/constants/IconsPath
 
 # IntelliJ related
 *.iml
