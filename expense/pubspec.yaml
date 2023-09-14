@@ -38,6 +38,8 @@ dependencies:
   get:
   flutter_signin_button: ^2.0.0
   d_chart: ^2.6.2
+  lite_rolling_switch: ^1.0.1
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
