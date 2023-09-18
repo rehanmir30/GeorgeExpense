@@ -1,5 +1,4 @@
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmojiPopUpController extends GetxController{
@@ -769,6 +768,37 @@ class EmojiPopUpController extends GetxController{
     "assets/images/VacationIcon/tubo-respirador.png",
     "assets/images/VacationIcon/vacaciones.png"
   ];
+
+
+
+String? _selectedEmoji;
+String? get selectedEmoji=>_selectedEmoji;
+
+String? _globalCategories;
+String? get globalCategories=>_globalCategories;
+
+List<String>? _selectedList;
+List<String>? get selectedList=>_selectedList;
+
+
+
+onListUpdate(List<String>? list)async{
+  _selectedList = list;
+  update();
+}
+
+onChangeGlobleCategories(String? value)async{
+_globalCategories = value;
+  update();
+
+}
+
+
+setSelectedImage(image)async{
+  _selectedEmoji = image;
+  selectedList?.add(_selectedEmoji??"");
+  update();
+}
 
 
 

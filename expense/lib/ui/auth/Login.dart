@@ -29,13 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            BackgroundImg(),
+            const BackgroundImg(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "welcome".tr,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                 ),
                 Expanded(
                   child: Column(
@@ -46,22 +46,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: emailController,
                         // cursorColor: AppColors.red,
                         keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 20),
-                            enabledBorder: OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
                             labelText: "email".tr,
-                            labelStyle: TextStyle(color: Colors.black)),
+                            labelStyle: const TextStyle(color: Colors.black)),
                         validator: (email){
                           if(email==null || email.isEmpty){
                             return "emailrequired".tr;
                           }
+                          return null;
                         },
                       ),
                       TextFormField(
@@ -69,21 +70,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         // cursorColor: AppColors.red,
                         obscureText: !showPassword,
                         keyboardType: TextInputType.text,
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                             // contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
-                            enabledBorder: OutlineInputBorder(
+                            enabledBorder: const OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
-                            focusedBorder: OutlineInputBorder(
+                            focusedBorder: const OutlineInputBorder(
                                 // borderSide: BorderSide.none,
                                 ),
                             labelText: "password".tr,
-                            labelStyle: TextStyle(color: Colors.black)),
+                            labelStyle: const TextStyle(color: Colors.black)),
                         validator: (password){
                           if(password==null || password.isEmpty){
                             return "passwordrequired".tr;
                           }
+                          return null;
                         },
                       ).marginOnly(top: 12),
                       Row(
@@ -106,14 +108,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           InkWell(
                               onTap: (){
-                                Get.to(ForgotPassword(),transition: Transition.downToUp);
+                                Get.to(const ForgotPassword(),transition: Transition.downToUp);
                               },
                               child: Text("forgotPassword".tr,softWrap: true,))
                         ],
                       ),
                       InkWell(
                         onTap: (){
-                          Get.offAll(HomeScreen(),transition: Transition.zoom);
+                          Get.offAll(const HomeScreen(),transition: Transition.zoom);
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -123,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(10)),
                           child: Text(
                             "login".tr,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ).marginSymmetric(vertical: 14),
                         ),
                       ),
@@ -132,15 +134,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             "newtoCommunity".tr,
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                           InkWell(
                             onTap: (){
-                              Get.to(SignUpScreen(),transition: Transition.zoom);
+                              Get.to(const SignUpScreen(),transition: Transition.zoom);
                             },
                             child: Text(
                               "signupNow".tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18),
@@ -176,11 +178,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return MyAlertDialog();
+                                  return const MyAlertDialog();
                                 },
                               );
                             },
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(controller.dropdownValue['name'].toString(),style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),Icon(Icons.arrow_drop_down_sharp,color: Colors.black,size: 50,)],));
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(controller.dropdownValue['name'].toString(),style: const TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),const Icon(Icons.arrow_drop_down_sharp,color: Colors.black,size: 50,)],));
                       },),
 
                     ],

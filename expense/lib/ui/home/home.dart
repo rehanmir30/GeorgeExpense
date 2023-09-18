@@ -4,6 +4,8 @@ import 'package:d_chart/ordinal/pie.dart';
 import 'package:expense/AppColors/colors.dart';
 import 'package:expense/Controllers/DashBoardController/dashboard_controller.dart';
 import 'package:expense/ui/home/CreateCategory/create_category_screen.dart';
+import 'package:expense/ui/home/TransactionDetials/GraphicsSummary.dart';
+import 'package:expense/ui/home/TransactionDetials/LastTransactionDetails.dart';
 import 'package:expense/ui/home/TransactionDetials/ProductSummaryScreen.dart';
 import 'package:expense/ui/home/TransactionDetials/Recordator.dart';
 import 'package:expense/ui/home/TransactionDetials/TopMonthExpnses.dart';
@@ -71,9 +73,109 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 children: [
                   Image.asset("assets/images/alarm.png",width: 35,height: 35,).marginSymmetric(horizontal: 5),
                   Image.asset("assets/images/calendar.png",width: 35,height: 35,).marginSymmetric(horizontal: 5),
-                  Image.asset("assets/images/wallet.png",width: 35,height: 35,).marginSymmetric(horizontal: 5),
+                  InkWell(
+                    onTap: (){
+                       showDialog(
+  context: context,
+  barrierColor: Colors.transparent,
+  builder: (context) {
+    return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      backgroundColor: Colors.transparent,
+      content: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 105,
+        color: AppColor.kYellow,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            const Positioned(
+              top: 10,
+              left: 8.0, // Adjust the padding here
+              right: 8.0, // Adjust the padding here
+              child: Text(
+                'Is it a funds product or a credit product?',
+                style: TextStyle(letterSpacing: 1.0, color: AppColor.kBlack, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Positioned(
+              bottom: -20,
+                width: MediaQuery.of(context).size.width*0.8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // SizedBox(width: MediaQuery.of(context).size.width * 0.16),
+                  InkWell(
+                    onTap: () {
+                      // Handle 'YES' button action
+                      // Get.to(()=>const TopMonthExpenses());
+                      Get.back();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 70,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(width: 2, color: AppColor.kBlack),
+                        color: AppColor.kGrey,
+                      ),
+                      child: const Text(
+                        'FUNDS',
+                        style: TextStyle(
+                          color: AppColor.kBlack,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      Get.back(); // Close the dialog when 'CANCEL' is tapped
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 70,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColor.kGrey,
+                        border: Border.all(width: 2, color: AppColor.kBlack),
+                      ),
+                      child: const Text(
+                        'CREDIT',
+                        style: TextStyle(
+                          color: AppColor.kBlack,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  },
+);
+
+                    },
+                    child: Image.asset("assets/images/wallet.png",width: 35,height: 35,).marginSymmetric(horizontal: 5)),
                   Image.asset("assets/images/calculator.png",width: 35,height: 35,).marginSymmetric(horizontal: 5),
-                  Image.asset("assets/images/xlsdownload.png",width: 35,height: 35,).marginSymmetric(horizontal: 5),
+                  InkWell(
+                    onTap:(){
+                      Get.to(()=> const TopMonthExpenses());
+                    },
+                    child: Hero(
+                      tag: "download",
+                      child: Image.asset("assets/images/FinanceIcon/matematicas.png",width: 35,height: 35,).marginSymmetric(horizontal: 5))),
       
                 ],
               ).marginSymmetric(horizontal: 30),
@@ -102,7 +204,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             Get.to(()=>const CreateCategoryScreen());
                           }
                           },
-                          child: Image.asset("${controller.selected_services[index]}",width: 10,height: 10,)),
+                          child: Hero(
+                            tag: "category",
+                            child: Image.asset("${controller.selected_services[index]}",width: 10,height: 10,))),
                     ).marginAll(10);
                   }, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),);
               },),
@@ -217,7 +321,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                      child: const Icon(Icons.keyboard_arrow_down_outlined,color: AppColor.kWhite,),
                    ).marginOnly(right: 10),
       
-                   const Text('Last Transactions:',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                   InkWell(
+                    onTap:(){
+                      Get.to(()=>const LastTrsnsactionDetail());
+                    },
+                    child: const Hero(
+                      tag: "last",
+                      child: Text('Last Transactions:',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),))),
                  ],),
       
                   
@@ -287,9 +397,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ],
               ).marginSymmetric(horizontal: 10,vertical: 5),
               const SizedBox(height: 10,),
-              const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('GRAPHICAL SUMMARY:',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)).marginSymmetric(horizontal: 10),
+              InkWell(
+                onTap: (){
+                  Get.to(()=>const GraphicsSummary());
+                },
+                child: const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('GRAPHICAL SUMMARY:',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)).marginSymmetric(horizontal: 10),
+              ),
       
               const SizedBox(height: 20,),
       
@@ -306,7 +421,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   // Optionally, provide a custom label for each data point
                   return '${dataPoint.domain}: ${dataPoint.measure}';
                 },
-      
+                  
               ),
             ),
       
@@ -558,34 +673,34 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
 
       // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   showDialog(context: context, builder: (context) {
-      //     return  EmojiTabController(
-      //         tabController: tabController,
-      //         AnimalEmoji: Get.find<EmojiPopUpController>().AnimalEmoji,
-      //         BabyEmoji: Get.find<EmojiPopUpController>().BabyEmoji,
-      //         BusinessEmoji: Get.find<EmojiPopUpController>().BusinessEmoji,
-      //         CarEmoji: Get.find<EmojiPopUpController>().CarEmoji,
-      //         EntertainmentEmoji: Get.find<EmojiPopUpController>().EntertainmentEmoji,
-      //         FamilyEmoji: Get.find<EmojiPopUpController>().FamilyEmoji,
-      //         FinanceEmoji: Get.find<EmojiPopUpController>().FinanceEmoji,
-      //         FoodAndDrinksEmoji: Get.find<EmojiPopUpController>().FoodAndDrinksEmoji,
-      //         GymEmoji: Get.find<EmojiPopUpController>().GymEmoji,
-      //         HealthCareEmoji: Get.find<EmojiPopUpController>().HealthCareEmoji,
-      //         HomeEmoji: Get.find<EmojiPopUpController>().HomeEmoji,
-      //         ITComputerIEmoji: Get.find<EmojiPopUpController>().ITComputerIEmoji,
-      //         MakupEmoji: Get.find<EmojiPopUpController>().MakupEmoji,
-      //         RestaurantEmoji: Get.find<EmojiPopUpController>().RestaurantEmoji,
-      //         RopaClothingEmoji: Get.find<EmojiPopUpController>().RopaClothingEmoji,
-      //         ServicesEmoji: Get.find<EmojiPopUpController>().ServicesEmoji,
-      //         ShoppingEmoji: Get.find<EmojiPopUpController>().ShoppingEmoji,
-      //         SportsEmoji: Get.find<EmojiPopUpController>().SportsEmoji,
-      //         StatisticsEmoji: Get.find<EmojiPopUpController>().StatisticsEmoji,
-      //         StudiesEducationEmoji: Get.find<EmojiPopUpController>().StudiesEducationEmoji,
-      //         SubscriptionEmoji: Get.find<EmojiPopUpController>().SubscriptionEmoji,
-      //         TransportEmoji: Get.find<EmojiPopUpController>().TransportEmoji,
-      //         UsersEmoji: Get.find<EmojiPopUpController>().UsersEmoji,
-      //         VacationEmoji: Get.find<EmojiPopUpController>().VacationEmoji);
-      //   },);
+        // showDialog(context: context, builder: (context) {
+        //   return  EmojiTabController(
+        //       tabController: tabController,
+        //       AnimalEmoji: Get.find<EmojiPopUpController>().AnimalEmoji,
+        //       BabyEmoji: Get.find<EmojiPopUpController>().BabyEmoji,
+        //       BusinessEmoji: Get.find<EmojiPopUpController>().BusinessEmoji,
+        //       CarEmoji: Get.find<EmojiPopUpController>().CarEmoji,
+        //       EntertainmentEmoji: Get.find<EmojiPopUpController>().EntertainmentEmoji,
+        //       FamilyEmoji: Get.find<EmojiPopUpController>().FamilyEmoji,
+        //       FinanceEmoji: Get.find<EmojiPopUpController>().FinanceEmoji,
+        //       FoodAndDrinksEmoji: Get.find<EmojiPopUpController>().FoodAndDrinksEmoji,
+        //       GymEmoji: Get.find<EmojiPopUpController>().GymEmoji,
+        //       HealthCareEmoji: Get.find<EmojiPopUpController>().HealthCareEmoji,
+        //       HomeEmoji: Get.find<EmojiPopUpController>().HomeEmoji,
+        //       ITComputerIEmoji: Get.find<EmojiPopUpController>().ITComputerIEmoji,
+        //       MakupEmoji: Get.find<EmojiPopUpController>().MakupEmoji,
+        //       RestaurantEmoji: Get.find<EmojiPopUpController>().RestaurantEmoji,
+        //       RopaClothingEmoji: Get.find<EmojiPopUpController>().RopaClothingEmoji,
+        //       ServicesEmoji: Get.find<EmojiPopUpController>().ServicesEmoji,
+        //       ShoppingEmoji: Get.find<EmojiPopUpController>().ShoppingEmoji,
+        //       SportsEmoji: Get.find<EmojiPopUpController>().SportsEmoji,
+        //       StatisticsEmoji: Get.find<EmojiPopUpController>().StatisticsEmoji,
+        //       StudiesEducationEmoji: Get.find<EmojiPopUpController>().StudiesEducationEmoji,
+        //       SubscriptionEmoji: Get.find<EmojiPopUpController>().SubscriptionEmoji,
+        //       TransportEmoji: Get.find<EmojiPopUpController>().TransportEmoji,
+        //       UsersEmoji: Get.find<EmojiPopUpController>().UsersEmoji,
+        //       VacationEmoji: Get.find<EmojiPopUpController>().VacationEmoji);
+        // },);
       // },child: const Icon(Icons.add),),
     );
   }

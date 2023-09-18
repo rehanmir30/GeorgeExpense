@@ -1,3 +1,4 @@
+import 'package:expense/Controllers/EmojiPopUpController/EmojiPopUpController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -66,8 +67,8 @@ class EmojiTabController extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10)
       ),
-      contentPadding: EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 2),
-      content: Container(
+      contentPadding: const EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 2),
+      content: SizedBox(
         height: MediaQuery.of(context).size.width,
         width: MediaQuery.of(context).size.width*0.9,
         child: Column(
@@ -108,10 +109,10 @@ class EmojiTabController extends StatelessWidget {
                 Tab(text: 'Vacation'),
               ],
             ),
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.width*0.8, // Adjust the height as needed
               child: TabBarView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 controller: tabController,
                 children: [
                   EmojiTab(tabEmojis: AnimalEmoji??[]),
@@ -151,22 +152,25 @@ class EmojiTabController extends StatelessWidget {
 class EmojiTab extends StatelessWidget {
   final List<String> tabEmojis;
 
-  EmojiTab({required this.tabEmojis,super.key});
+  const EmojiTab({required this.tabEmojis,super.key});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5, // Number of emojis per row
       ),
       itemCount: tabEmojis.length,
       itemBuilder: (context, index) {
         return Center(
           child: GestureDetector(
-            onTap: () {
+            onTap: ()async {
               // You can handle emoji selection here
               final selectedEmoji = tabEmojis[index];
+             await Get.find<EmojiPopUpController>().setSelectedImage(selectedEmoji);
               print('Selected Emoji: $selectedEmoji');
+              Get.back();
+              // return selectedEmoji;
             },
             child: Container(
               height: 50,
@@ -174,7 +178,7 @@ class EmojiTab extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(0),
                 image: DecorationImage(
-                  image: AssetImage("${tabEmojis[index]}"),
+                  image: AssetImage(tabEmojis[index]),
                   fit: BoxFit.fill,
                 )
               ),

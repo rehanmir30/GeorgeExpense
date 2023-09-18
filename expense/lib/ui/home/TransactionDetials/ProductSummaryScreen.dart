@@ -165,7 +165,7 @@ body: SafeArea(
                         child: Image.asset("assets/images/addIcon.png",width: 100,height: 100,)),
                   ).marginAll(10),
 
-                  const Text('CREATE RECORD',style:TextStyle(color: AppColor.kBlack,fontSize: 23,fontWeight: FontWeight.bold)),
+                  const Text('ADD A PRODUCT TO THE LIST',style:TextStyle(color: AppColor.kBlack,fontSize: 23,fontWeight: FontWeight.bold)),
 
     ]),
 ),
