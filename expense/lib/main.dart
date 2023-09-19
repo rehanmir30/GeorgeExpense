@@ -1,4 +1,5 @@
 import 'package:expense/ui/Splash.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -6,8 +7,9 @@ import 'package:get/get.dart';
 import 'Controllers/InitController/InitController.dart';
 import 'constants/LocalizationTranslator.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([
   DeviceOrientation.portraitUp,
   DeviceOrientation.portraitDown,
@@ -27,10 +29,10 @@ class _ExpenseAppState extends State<ExpenseApp> {
     return GetMaterialApp(
       title: "Geoweb Expense",
       initialBinding: InitController(),
-      locale: Locale('es','US'),
+      locale: const Locale('es','US'),
       debugShowCheckedModeBanner: false,
       translations: LocalizationTranslator(),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

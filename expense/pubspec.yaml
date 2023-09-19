@@ -35,12 +35,30 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  #To Use Controllers
   get:
+  #To use ore build Buttons
   flutter_signin_button: ^2.0.0
+  #To Use Charts in App
   d_chart: ^2.6.2
+  #To use Switch Button
   lite_rolling_switch: ^1.0.1
+  #To use Calender In App
   table_calendar: ^3.0.9
+  #To use Rounded Tabbar
   rounded_tabbar_widget: ^0.0.2
+  #To Initizalize Firebase In App
+  firebase_core:
+  #To use Firebase Authentication
+  firebase_auth:
+  #To use Firebase Firestore
+  cloud_firestore:
+  #To store local data 
+  shared_preferences:
+  #To use local Database
+  sqflite:
+
+
 
 dev_dependencies:
   flutter_test:

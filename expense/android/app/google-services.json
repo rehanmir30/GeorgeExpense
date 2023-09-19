@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309165481802",
+    "project_id": "geoweb-expense",
+    "storage_bucket": "geoweb-expense.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309165481802:android:e715fc744d059c22422bb3",
+        "android_client_info": {
+          "package_name": "com.geoweb.expense.expense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi2UDZiFL81QNQZfJyWyriCmEVo2I_0yg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
