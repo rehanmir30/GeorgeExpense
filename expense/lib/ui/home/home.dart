@@ -52,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen>
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Align(
                 alignment: Alignment.centerRight,
@@ -207,9 +208,7 @@ class _HomeScreenState extends State<HomeScreen>
                           ).marginSymmetric(horizontal: 5))),
                 ],
               ).marginSymmetric(horizontal: 30),
-
               const SizedBox(height: 10),
-
               GetBuilder<DashBoardController>(
                 builder: (controller) {
                   return GridView.builder(
@@ -858,37 +857,6 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
       ),
-
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      // showDialog(context: context, builder: (context) {
-      //   return  EmojiTabController(
-      //       tabController: tabController,
-      //       AnimalEmoji: Get.find<EmojiPopUpController>().AnimalEmoji,
-      //       BabyEmoji: Get.find<EmojiPopUpController>().BabyEmoji,
-      //       BusinessEmoji: Get.find<EmojiPopUpController>().BusinessEmoji,
-      //       CarEmoji: Get.find<EmojiPopUpController>().CarEmoji,
-      //       EntertainmentEmoji: Get.find<EmojiPopUpController>().EntertainmentEmoji,
-      //       FamilyEmoji: Get.find<EmojiPopUpController>().FamilyEmoji,
-      //       FinanceEmoji: Get.find<EmojiPopUpController>().FinanceEmoji,
-      //       FoodAndDrinksEmoji: Get.find<EmojiPopUpController>().FoodAndDrinksEmoji,
-      //       GymEmoji: Get.find<EmojiPopUpController>().GymEmoji,
-      //       HealthCareEmoji: Get.find<EmojiPopUpController>().HealthCareEmoji,
-      //       HomeEmoji: Get.find<EmojiPopUpController>().HomeEmoji,
-      //       ITComputerIEmoji: Get.find<EmojiPopUpController>().ITComputerIEmoji,
-      //       MakupEmoji: Get.find<EmojiPopUpController>().MakupEmoji,
-      //       RestaurantEmoji: Get.find<EmojiPopUpController>().RestaurantEmoji,
-      //       RopaClothingEmoji: Get.find<EmojiPopUpController>().RopaClothingEmoji,
-      //       ServicesEmoji: Get.find<EmojiPopUpController>().ServicesEmoji,
-      //       ShoppingEmoji: Get.find<EmojiPopUpController>().ShoppingEmoji,
-      //       SportsEmoji: Get.find<EmojiPopUpController>().SportsEmoji,
-      //       StatisticsEmoji: Get.find<EmojiPopUpController>().StatisticsEmoji,
-      //       StudiesEducationEmoji: Get.find<EmojiPopUpController>().StudiesEducationEmoji,
-      //       SubscriptionEmoji: Get.find<EmojiPopUpController>().SubscriptionEmoji,
-      //       TransportEmoji: Get.find<EmojiPopUpController>().TransportEmoji,
-      //       UsersEmoji: Get.find<EmojiPopUpController>().UsersEmoji,
-      //       VacationEmoji: Get.find<EmojiPopUpController>().VacationEmoji);
-      // },);
-      // },child: const Icon(Icons.add),),
     );
   }
 }

@@ -37,10 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "welcome".tr,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                    ),
+                    SizedBox(
+                      height: 150,
                     ),
                     TextFormField(
                       // controller: emailController,
@@ -188,11 +192,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ).marginOnly(top: 30),
-                    SignInButton(
-                      text: "googleSignIn".tr,
-                      Buttons.Google,
-                      onPressed: () {},
-                    ).marginOnly(top: 30),
+                    Align(
+                      alignment: Alignment.center,
+                      child: SignInButton(
+                        text: "googleSignIn".tr,
+                        Buttons.Google,
+                        onPressed: () {},
+                      ).marginOnly(top: 30),
+                    ),
                           
                     GetBuilder<Localization>(builder: (controller) {
                       return InkWell(

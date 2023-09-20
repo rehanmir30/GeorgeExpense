@@ -68,7 +68,7 @@ class _Sub_CategoriesState extends State<SubCategories> {
                             child: Hero(
                                 tag: "category",
                                 child: Image.asset(
-                                  controller.selectedList![index],
+                                  controller.selectedList?[index]??"assets/images/AnimalIcon/abeja.png",
                                   width: 10,
                                   height: 10,
                                 ))),

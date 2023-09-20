@@ -1,4 +1,6 @@
 import 'package:expense/AppColors/colors.dart';
+import 'package:expense/Controllers/sqlController/SqlController.dart';
+import 'package:expense/Models/category.dart';
 import 'package:expense/custom_widget/CustomEmojiPicker/custom_emoji_picker.dart';
 import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
     with SingleTickerProviderStateMixin {
   TabController? tabController;
   String? selected_image;
+  bool sublevelCheck=true;
 
   @override
   void initState() {
@@ -173,15 +176,18 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
               LiteRollingSwitch(
                 width: 100,
                 //initial value
-                value: true,
+                value: sublevelCheck,
                 textOn: '',
                 textOff: '',
                 colorOn: AppColor.kGreen,
-                colorOff: AppColor.kGrey,
-                iconOn: Icons.done,
-                iconOff: Icons.done,
+                colorOff: AppColor.kGreen,
+                iconOn: Icons.arrow_forward_ios,
+                iconOff: Icons.arrow_back_ios_new,
                 textSize: 16.0,
                 onChanged: (bool state) {
+                  setState(() {
+                    sublevelCheck=state;
+                  });
                   //Use it to manage the different states
                   print('Current State of SWITCH IS: $state');
                 },
@@ -201,22 +207,31 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
           const SizedBox(
             height: 40,
           ),
-          Container(
-            alignment: Alignment.center,
-            width: 200,
-            height: 50,
-            decoration: BoxDecoration(
-              color: AppColor.kGrey,
-              border: Border.all(width: 2, color: AppColor.kBlack),
-              borderRadius: BorderRadius.circular(10),
+          InkWell(
+            overlayColor: MaterialStatePropertyAll(
+              Colors.transparent
             ),
-            child: const Text(
-              'CANCEL',
-              style: TextStyle(
-                  color: AppColor.kBlack,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  letterSpacing: 1),
+            onTap: (){
+              Get.back();
+              Get.back();
+            },
+            child: Container(
+              alignment: Alignment.center,
+              width: 200,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColor.kGrey,
+                border: Border.all(width: 2, color: AppColor.kBlack),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'CANCEL',
+                style: TextStyle(
+                    color: AppColor.kBlack,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                    letterSpacing: 1),
+              ),
             ),
           ),
           const SizedBox(
@@ -224,7 +239,12 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
           ),
           InkWell(
             onTap: (){
-              Get.to(()=>const SubCategories());
+              if(sublevelCheck){
+                // Get.to(()=>const SubCategories());
+              }else{
+                Get.find<SqlController>().category_insert(CategoryModel(cat_name: "Test",cat_image: "assets/images/AnimalIcon/abeja.png",cat_type: 0));
+              }
+
             },
             child: Container(
               alignment: Alignment.center,
