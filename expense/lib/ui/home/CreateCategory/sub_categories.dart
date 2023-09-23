@@ -65,13 +65,11 @@ class _Sub_CategoriesState extends State<SubCategories> {
                                 Get.to(() => const CreateCategoryScreen());
                               }
                             },
-                            child: Hero(
-                                tag: "category",
-                                child: Image.asset(
-                                  controller.selectedList?[index]??"assets/images/AnimalIcon/abeja.png",
-                                  width: 10,
-                                  height: 10,
-                                ))),
+                            child: Image.asset(
+                              controller.selectedList?[index]??"assets/images/AnimalIcon/abeja.png",
+                              width: 10,
+                              height: 10,
+                            )),
                       ).marginAll(10);
                     },
                     gridDelegate:

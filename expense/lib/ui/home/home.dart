@@ -12,6 +12,8 @@ import 'package:expense/ui/home/TransactionDetials/TopMonthExpnses.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Controllers/DataController/DataController.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -199,25 +201,24 @@ class _HomeScreenState extends State<HomeScreen>
                       onTap: () {
                         Get.to(() => const TopMonthExpenses());
                       },
-                      child: Hero(
-                          tag: "download",
-                          child: Image.asset(
-                            "assets/images/FinanceIcon/matematicas.png",
-                            width: 35,
-                            height: 35,
-                          ).marginSymmetric(horizontal: 5))),
+                      child: Image.asset(
+                        "assets/images/FinanceIcon/matematicas.png",
+                        width: 35,
+                        height: 35,
+                      ).marginSymmetric(horizontal: 5)),
                 ],
               ).marginSymmetric(horizontal: 30),
               const SizedBox(height: 10),
-              GetBuilder<DashBoardController>(
+              GetBuilder<DataController>(
                 builder: (controller) {
                   return GridView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: controller.selected_services.length,
+                    itemCount: controller.categoryModelList?.length??0,
                     itemBuilder: (context, index) {
+                      print('${controller.categoryModelList?[index].cat_image}');
                       return Container(
-                        padding: (index == 0)
+                        padding: (index == controller.categoryModelList!.length-1)
                             ? const EdgeInsets.all(15)
                             : const EdgeInsets.all(0),
                         width: 10,
@@ -225,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           // borderRadius: BorderRadius.circular(10),
-                          border: (index == 0)
+                          border: (index == controller.categoryModelList!.length-1)
                               ? Border.all(color: AppColor.kWhite, width: 0)
                               : Border.all(color: AppColor.kBlack, width: 1),
                         ),
@@ -233,17 +234,15 @@ class _HomeScreenState extends State<HomeScreen>
                             overlayColor: const MaterialStatePropertyAll(
                                 Colors.transparent),
                             onTap: () {
-                              if (index == 0) {
+                              if (index == controller.categoryModelList!.length-1) {
                                 Get.to(() => const CreateCategoryScreen());
                               }
                             },
-                            child: Hero(
-                                tag: "category",
-                                child: Image.asset(
-                                  "${controller.selected_services[index]}",
-                                  width: 10,
-                                  height: 10,
-                                ))),
+                            child: Image.asset(
+                              "${controller.categoryModelList?[index].cat_image}",
+                              width: 10,
+                              height: 10,
+                            )),
                       ).marginAll(10);
                     },
                     gridDelegate:
@@ -400,13 +399,11 @@ class _HomeScreenState extends State<HomeScreen>
                           onTap: () {
                             Get.to(() => const LastTrsnsactionDetail());
                           },
-                          child: const Hero(
-                              tag: "last",
-                              child: Text(
-                                'Last Transactions:',
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ))),
+                          child: Text(
+                            'Last Transactions:',
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          )),
                     ],
                   ),
                   Row(

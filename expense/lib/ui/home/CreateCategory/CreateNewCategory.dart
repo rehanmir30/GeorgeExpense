@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:expense/AppColors/colors.dart';
 import 'package:expense/Controllers/sqlController/SqlController.dart';
 import 'package:expense/Models/category.dart';
+import 'package:expense/Models/transaction_model.dart';
 import 'package:expense/custom_widget/CustomEmojiPicker/custom_emoji_picker.dart';
-import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
@@ -127,15 +129,9 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
                     border: Border.all(color: AppColor.kBlack, width: 1),
                   ),
                   child:GetBuilder<EmojiPopUpController>(builder: (controller) {
-                    return  Hero(
-                      tag: "category",
-                      child: (controller.selectedEmoji==null || controller.selectedEmoji=="" ||controller.selectedEmoji!.isEmpty)
-                      ?Image.asset("assets/images/addIcon.png",fit: BoxFit.fill,)
-                      :Image.asset("${Get.find<EmojiPopUpController>().selectedEmoji}",fit: BoxFit.fill)
-                    
-                      
-                      
-                      );
+                    return  (controller.selectedEmoji==null || controller.selectedEmoji=="" ||controller.selectedEmoji!.isEmpty)
+                    ?Image.asset("assets/images/addIcon.png",fit: BoxFit.fill,)
+                    :Image.asset("${Get.find<EmojiPopUpController>().selectedEmoji}",fit: BoxFit.fill);
                   },)
                 ),
               ),
@@ -208,7 +204,7 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
             height: 40,
           ),
           InkWell(
-            overlayColor: MaterialStatePropertyAll(
+            overlayColor: const MaterialStatePropertyAll(
               Colors.transparent
             ),
             onTap: (){
@@ -238,11 +234,21 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
             height: 10,
           ),
           InkWell(
-            onTap: (){
+            onTap: () async {
               if(sublevelCheck){
                 // Get.to(()=>const SubCategories());
               }else{
-                Get.find<SqlController>().category_insert(CategoryModel(cat_name: "Test",cat_image: "assets/images/AnimalIcon/abeja.png",cat_type: 0));
+                var r = UniqueKey().toString();
+               await Get.find<SqlController>()
+                    .category_insert(
+                    CategoryModel(
+                        cat_id: r.toString(),
+                        cat_name: "Test",
+                        cat_image: "assets/images/AnimalIcon/abeja.png",
+                        cat_type: 0,
+                        main_cat_id: "general",
+                    )
+                );
               }
 
             },

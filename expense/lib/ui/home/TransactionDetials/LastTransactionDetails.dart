@@ -172,10 +172,7 @@ class LastTrsnsactionDetail extends StatelessWidget {
                   color: AppColor.kWhite,
                 ),
               ),
-              const SizedBox(width: 10,),const 
-              Hero(
-                tag: "last",
-                child: Text("Last Transactions:",style:TextStyle(color: AppColor.kBlack,fontSize: 24,fontWeight: FontWeight.bold)))
+              const SizedBox(width: 10,),Text("Last Transactions:",style:TextStyle(color: AppColor.kBlack,fontSize: 24,fontWeight: FontWeight.bold))
             ],
           ),
 

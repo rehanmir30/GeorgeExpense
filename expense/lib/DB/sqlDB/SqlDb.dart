@@ -1,12 +1,11 @@
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../Controllers/sqlController/SqlController.dart';
 import '../../Models/category.dart';
+import '../../Models/transaction_model.dart';
 
 
 
@@ -44,11 +43,11 @@ class SqlDb {
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     await db.execute(
-      'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT, cat_name TEXT, cat_image TEXT, cat_type NUM)',
+      'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT,cat_id TEXT, cat_name TEXT, cat_image TEXT, cat_type NUM,main_cat_id TEXT)',
     );
-    // await db.execute(
-    //   'CREATE TABLE transactions(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_category_id INTEGER,transaction_amount TEXT, transaction_type TEXT,transaction_bank_id TEXT, transaction_description TEXT, transaction_time TEXT, CONSTRAINT fk_transaction_category_id FOREIGN KEY(transaction_category_id) REFERENCES category(category_id)  ON DELETE CASCADE)',
-    // );
+    await db.execute(
+      'CREATE TABLE transactions_table(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_cat_id TEXT,transaction_amount TEXT, transaction_type TEXT,transaction_name TEXT, transaction_time TEXT, CONSTRAINT fk_transaction_cat_id FOREIGN KEY(transaction_cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE)',
+    );
     // await db.execute(
     //   'CREATE TABLE category(category_id INTEGER PRIMARY KEY AUTOINCREMENT, category_name TEXT)',
     // );
@@ -78,16 +77,17 @@ class SqlDb {
 
 
   //Bank Inserted
-   Future<int> category_insert(CategoryModel banks, MyDatabase) async {
+   Future<int> category_insert(CategoryModel categoryModel, MyDatabase) async {
+     print("Functaion called");
      // Get a reference to the database.
      final Database db = await MyDatabase;
 
      try {
-       int id = await db.insert('Categories', banks.toMap());
+       int id = await db.insert('Categories', categoryModel.toMap());
        print('Db Category Inserted');
        return id;
      } catch (e) {
-       print('DbException' + e.toString());
+       print('DbException$e');
        return -1;
      }
    }
@@ -106,7 +106,7 @@ class SqlDb {
      //   where: 'item_package_id = ?',
      //   whereArgs: [id],
      // );
-     print("Package deleted at"+ id.toString());
+     print("Package deleted at$id");
    }
 
    // Future<int> notification_insert(NotificationModel notificationModel, MyDatabase) async {
@@ -123,19 +123,19 @@ class SqlDb {
    //   }
    // }
    //
-   // //Insert transaction
-   // Future<int> transaction_insert(TransactionModel transaction, MyDatabase) async {
-   //   // Get a reference to the database.
-   //   final Database db = await MyDatabase;
-   //   try {
-   //     int id = await db.insert('transactions', transaction.toMap());
-   //     print('Db transaction Inserted');
-   //     return id;
-   //   } catch (e) {
-   //     print('DbException' + e.toString());
-   //     return -1;
-   //   }
-   // }
+   //Insert transaction
+   Future<int> transaction_insert(TransactionModel transaction, MyDatabase) async {
+     // Get a reference to the database.
+     final Database db = await MyDatabase;
+     try {
+       int id = await db.insert('transactions_table', transaction.toMap());
+       print('Db transaction Inserted');
+       return id;
+     } catch (e) {
+       print('DbException$e');
+       return -1;
+     }
+   }
 
 
 
@@ -152,15 +152,26 @@ class SqlDb {
             whereArgs: ['%$searchString%']));
   }
 
+
+
+   Future<List<CategoryModel>> getAllCategories(MyDatabase) async {
+     Database db = await MyDatabase;
+     final List<Map<String, dynamic>> maps = await db.query('Categories');
+
+     return List.generate(maps.length, (i) {
+       return CategoryModel.fromMap(maps[i]);
+     });
+   }
+
    // //Get all banks
-   // Future<List<Banks>> getAllBanks(MyDatabase) async {
+   // Future<List<CategoryModel>> getAllCategories(MyDatabase) async {
    //   Database db = await MyDatabase;
-   //   final List<Map<String, dynamic>> maps = await db.rawQuery("select * from `bank`");
+   //   final List<Map<String, dynamic>> maps = await db.rawQuery("select * from `Categories`");
    //
    //   return List.generate(maps.length, (i) {
-   //     return Banks(
+   //     return CategoryModel(
    //         id: maps[i]['id'],
-   //         BankName: maps[i]['bank_name'],
+   //         main_cat_id: maps[i]['mainCa'],
    //         Image: maps[i]['bank_image'],
    //     );
    //   });

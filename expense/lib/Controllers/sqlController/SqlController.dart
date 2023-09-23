@@ -1,12 +1,15 @@
 import 'package:expense/Models/category.dart';
+import 'package:expense/ui/home/CreateCategory/category_transaction_screen.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../DB/sqlDB/SqlDb.dart';
+import '../../Models/transaction_model.dart';
+import '../DataController/DataController.dart';
 
 class SqlController extends GetxController{
 
-   var _databaseName = "geowebExpense.db";
-   var _databaseVersion = 1;
+   final _databaseName = "geowebExpense.db";
+   final _databaseVersion = 1;
    SqlDb sqlDb = SqlDb();
 
    var No ="No Recent Data";
@@ -26,7 +29,7 @@ class SqlController extends GetxController{
    // List<TransactionModel>? get pieTransactionsList=>_pieTransactionsList;
    // List<TransactionModel> _pieChartTotal=[];
    // List<TransactionModel>? get pieChartTotal=>_pieChartTotal;
-   List<double> _pieTotal=[];
+   final List<double> _pieTotal=[];
    List<double>? get pieTotal=>_pieTotal;
 
    // List<TransactionModel>? _specificBankTransactionsList=[];
@@ -51,18 +54,32 @@ class SqlController extends GetxController{
 
   FindDatabase()async{
      _database = await sqlDb.FindDatabase(_databaseName,_databaseVersion,database);
-     // getAllBanks();
+    await getAllCategories();
      // getCategories();
      // await getNotifications();
      // await getEarlierNotifications();
      // await getTodayNotifications();
   }
 
-   category_insert(CategoryModel _category)async{
-     int id = await sqlDb.category_insert(_category,database);
+   category_insert(CategoryModel category)async{
+     int id = await sqlDb.category_insert(category,database);
      print(id);
+     Get.to(()=>CategoryTransactionScreen(categoryModel: category,));
      update();
      return id;
+   }
+
+   insert_entries_in_recpected_tables(CategoryModel categoryModel)async{
+
+     await category_insert(categoryModel);
+     if(categoryModel.transactionList!=null && (categoryModel.transactionList?.isNotEmpty??false)){
+       for(var i in categoryModel.transactionList!){
+         print(i.transactionCatName);
+         await transaction_insert(i);
+
+       }
+     }
+
    }
 
    // notification_insert(NotificationModel notificationModel)async{
@@ -72,14 +89,14 @@ class SqlController extends GetxController{
    //   return id;
    // }
    //
-   // transaction_insert(TransactionModel transaction) async {
-   //   SqlDb sqlDb = SqlDb();
-   //   await sqlDb.transaction_insert(transaction, database);
-   //   await getTransactions();
-   //   await getPieTransactionList();
-   //   update();
-   //
-   // }
+   transaction_insert(TransactionModel transaction) async {
+     SqlDb sqlDb = SqlDb();
+     await sqlDb.transaction_insert(transaction, database);
+    //  await getTransactions();
+    //  await getPieTransactionList();
+     update();
+   
+   }
    //
    // deleteBank(id)async{
    //   await sqlDb.deleteBank(id, database);
@@ -91,13 +108,16 @@ class SqlController extends GetxController{
    //   update();
    // }
    //
-   // getAllBanks() async {
-   //   AddNewBankContrller addNewBankContrller = Get.find<AddNewBankContrller>();
-   //   List<Banks> listBanks;
-   //   listBanks = await sqlDb.getAllBanks(database);
-   //   await addNewBankContrller.getAllBanks(listBanks);
-   //   update();
-   // }
+   getAllCategories() async {
+     DataController dataController = Get.find<DataController>();
+     List<CategoryModel>? listCategories;
+     // listCategories!.add(CategoryModel(transactionList: [],cat_id: "0",cat_image: "assets/images/addIcon.png",cat_name: "Add Button",cat_type: "2",id: "000",main_cat_id: "addButton"));
+     listCategories = await sqlDb.getAllCategories(database);
+     listCategories.insert(0,  CategoryModel(transactionList: [],cat_id: "0",cat_image: "assets/images/addIcon.png",cat_name: "Add Button",cat_type: "2",id: "000",main_cat_id: "addButton"));
+     listCategories=listCategories.reversed.toList();
+     await dataController.getAllCategories(listCategories);
+     update();
+   }
    //
    // getCategories() async {
    //   _categoryList = await sqlDb.getAllCategories(database);

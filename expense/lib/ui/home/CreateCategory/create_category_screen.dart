@@ -39,9 +39,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
                     onTap:(){
                       Get.to(()=>const CreateNewCategory());
                     },
-                    child:Hero(
-                      tag: "category",
-                      child: Image.asset("assets/images/addIcon.png",width: 100,height: 100,)) ,),
+                    child:Image.asset("assets/images/addIcon.png",width: 100,height: 100,) ,),
                   const SizedBox(height: 20,),
                   const Text('CREATE CATEGORY',style: TextStyle(fontSize: 25)),
                 ],

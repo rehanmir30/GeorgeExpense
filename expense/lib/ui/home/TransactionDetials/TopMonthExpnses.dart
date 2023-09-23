@@ -274,13 +274,10 @@ class _TopMonthExpensesState extends State<TopMonthExpenses> {
                           // borderRadius: BorderRadius.circular(10),
                           // border: Border.all(color: AppColor.kBlack, width: 2)
                           ),
-                      child: Hero(
-                        tag: "download",
-                        child: Image.asset(
-                          "assets/images/FinanceIcon/matematicas.png",
-                          width: 40,
-                          height: 40,
-                        ),
+                      child: Image.asset(
+                        "assets/images/FinanceIcon/matematicas.png",
+                        width: 40,
+                        height: 40,
                       ),
                     ).marginSymmetric(horizontal: 5),
                   ),
