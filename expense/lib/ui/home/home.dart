@@ -3,7 +3,9 @@ import 'package:d_chart/commons/data_model.dart';
 import 'package:d_chart/ordinal/pie.dart';
 import 'package:expense/AppColors/colors.dart';
 import 'package:expense/Controllers/DashBoardController/dashboard_controller.dart';
+import 'package:expense/ui/home/CreateCategory/category_transaction_screen.dart';
 import 'package:expense/ui/home/CreateCategory/create_category_screen.dart';
+import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
 import 'package:expense/ui/home/TransactionDetials/GraphicsSummary.dart';
 import 'package:expense/ui/home/TransactionDetials/LastTransactionDetails.dart';
 import 'package:expense/ui/home/TransactionDetials/ProductSummaryScreen.dart';
@@ -236,6 +238,8 @@ class _HomeScreenState extends State<HomeScreen>
                             onTap: () {
                               if (index == controller.categoryModelList!.length-1) {
                                 Get.to(() => const CreateCategoryScreen());
+                              }else{
+                                Get.to(()=>CategoryTransactionScreen(categoryModel: controller.categoryModelList?[index],));
                               }
                             },
                             child: Image.asset(

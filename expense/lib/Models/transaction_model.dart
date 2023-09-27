@@ -1,11 +1,14 @@
 
+import 'package:flutter/material.dart';
+
 class TransactionModel{
   var transactionId;
   var transactionCategoryId;
   var transactionAmount;
   var transactionType;
-  var transactionCatName;
+  var transactionName;
   var transactionTime;
+  var transactionDate;
 
 
   TransactionModel({
@@ -13,7 +16,8 @@ class TransactionModel{
       this.transactionCategoryId,
       this.transactionAmount,
       this.transactionType,
-      this.transactionCatName,
+      this.transactionName,
+    this.transactionDate,
       this.transactionTime});
 
   factory TransactionModel.fromMap(Map<String, dynamic> json) => TransactionModel(
@@ -21,17 +25,19 @@ class TransactionModel{
     transactionAmount: json["transaction_amount"],
     transactionCategoryId: json["transaction_cat_id"],
     transactionTime: json["transaction_time"],
+    transactionDate: json["transaction_date"],
     transactionType: json["transaction_type"],
-    transactionCatName: json["transaction_name"],
+    transactionName: json["transaction_name"],
   );
 
   Map<String, dynamic> toMap() => {
     "transaction_id": transactionId,
     "transaction_amount": transactionAmount,
     "transaction_cat_id": transactionCategoryId,
-    "transaction_time": transactionTime,
+    "transaction_time": transactionTime.toString(),
+    "transaction_date": transactionDate.toString(),
     "transaction_type": transactionType,
-    "transaction_name": transactionCatName,
+    "transaction_name": transactionName,
   };
 
 }

@@ -65,6 +65,7 @@ class SqlController extends GetxController{
      int id = await sqlDb.category_insert(category,database);
      print(id);
      Get.to(()=>CategoryTransactionScreen(categoryModel: category,));
+     getAllCategories();
      update();
      return id;
    }
@@ -74,7 +75,7 @@ class SqlController extends GetxController{
      await category_insert(categoryModel);
      if(categoryModel.transactionList!=null && (categoryModel.transactionList?.isNotEmpty??false)){
        for(var i in categoryModel.transactionList!){
-         print(i.transactionCatName);
+         print(i.transactionName);
          await transaction_insert(i);
 
        }
