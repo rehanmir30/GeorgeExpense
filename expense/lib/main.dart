@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'Controllers/InitController/InitController.dart';
-import 'constants/LocalizationTranslator.dart';
+import 'constants/localization_translator.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();

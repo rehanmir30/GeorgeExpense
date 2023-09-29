@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class SFUserModel {
   final String? name;
   final String? email;
@@ -40,16 +42,30 @@ class SFUserModel {
       };
 
   // Add methods to convert createdAt and updatedAt to DateTime objects
-  DateTime? getCreatedAtAsDateTime(createdAtTime) {
-    if (createdAtTime != null) {
-      return DateTime.parse(createdAtTime!);
+DateTime? getCreatedAtAsDateTime(String? createdAtTime) {
+  if (createdAtTime != null) {
+    try {
+      return DateTime.parse(createdAtTime);
+    } catch (e) {
+      // Handle parsing error, e.g., return null or provide a default date
+      if (kDebugMode) {
+        print("Error parsing create date: $e");
+      }
     }
-    return null;
   }
+  return null;
+}
+
 
   DateTime? getUpdatedAtAsDateTime(updatedAtTime) {
     if (updatedAtTime != null) {
-      return DateTime.parse(updatedAtTime!);
+      try{
+        return DateTime.parse(updatedAtTime!);
+      }catch(e){
+        if (kDebugMode) {
+        print("Error parsing update date: $e");
+      }
+      }
     }
     return null;
   }

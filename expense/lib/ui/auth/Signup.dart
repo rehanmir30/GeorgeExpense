@@ -1,4 +1,4 @@
-import 'package:expense/Controllers/AuthController/AuthController.dart';
+import 'package:expense/Controllers/AuthController/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -155,7 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   
                   ).marginOnly(top: 8),
                   TextFormField(
-                    initialValue: Get.find<AuthController>().confirm_password??"",
+                    initialValue: Get.find<AuthController>().confirmPassword??"",
                     obscureText: true,
                     // cursorColor: AppColors.red,
                     keyboardType: TextInputType.text,
@@ -197,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onTap: (){
                       if(_formKey.currentState!.validate()){
                         print("tapped");
-                        Get.find<AuthController>().SignUp();
+                        Get.find<AuthController>().signUp();
                       }
                     },
                     child: Container(

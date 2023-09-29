@@ -11,14 +11,15 @@ class SharedPref {
 
   static Future<void> saveUser(UserModel user) async {
     SFUserModel sfUserModel = SFUserModel(
-      createdAt: user.createdAt.toString(),
+      createdAt: (user.createdAt.toDate()).toString(),
       email:user.email,
       id: user.id,
       logout: user.logout,
       name: user.name,
-      updatedAt: user.updatedAt.toString(),
+      updatedAt: (user.updatedAt.toDate()).toString(),
     );
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.
+    getInstance();
     final userJson = sfUserModel.toJson();
     await prefs.setString(_keyUser, userJson);
   }

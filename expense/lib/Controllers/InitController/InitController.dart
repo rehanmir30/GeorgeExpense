@@ -1,4 +1,4 @@
-import 'package:expense/Controllers/AuthController/AuthController.dart';
+import 'package:expense/Controllers/AuthController/auth_controller.dart';
 import 'package:expense/Controllers/DataController/DataController.dart';
 import 'package:expense/Controllers/EmojiPopUpController/EmojiPopUpController.dart';
 import 'package:expense/Controllers/sqlController/SqlController.dart';

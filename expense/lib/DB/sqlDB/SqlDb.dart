@@ -46,7 +46,7 @@ class SqlDb {
       'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT,cat_id TEXT, cat_name TEXT, cat_image TEXT, cat_type NUM,main_cat_id TEXT)',
     );
     await db.execute(
-      'CREATE TABLE transactions_table(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_cat_id TEXT,transaction_amount TEXT, transaction_type TEXT,transaction_name TEXT, transaction_time TEXT, CONSTRAINT fk_transaction_cat_id FOREIGN KEY(transaction_cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE)',
+      'CREATE TABLE transactions_table(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_cat_id TEXT,transaction_amount TEXT, transaction_type TEXT,transaction_name TEXT, transaction_date TEXT,transaction_time TEXT, CONSTRAINT fk_transaction_cat_id FOREIGN KEY(transaction_cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE)',
     );
     // await db.execute(
     //   'CREATE TABLE category(category_id INTEGER PRIMARY KEY AUTOINCREMENT, category_name TEXT)',
@@ -177,23 +177,15 @@ class SqlDb {
    //   });
    // }
    //
-   // //Get all transactions
-   // Future<List<TransactionModel>> getAllTransactions(MyDatabase) async {
-   //   Database db = await MyDatabase;
-   //   final List<Map<String, dynamic>> maps = await db.rawQuery("select * from `transactions`");
-   //
-   //   return List.generate(maps.length, (i) {
-   //     return TransactionModel(
-   //       transactionId: maps[i]["transaction_id"],
-   //       transactionAmount: maps[i]["transaction_amount"],
-   //       transactionCategoryId: maps[i]["transaction_category_id"],
-   //       transactionDescription: maps[i]["transaction_description"],
-   //       transactionTime: maps[i]["transaction_time"],
-   //       transactionType: maps[i]["transaction_type"],
-   //       transactionBankId: maps[i]["transaction_bank_id"],
-   //     );
-   //   });
-   // }
+   //Get all transactions
+   Future<List<TransactionModel>> getAllTransactions(MyDatabase) async {
+     Database db = await MyDatabase;
+     final List<Map<String, dynamic>> maps = await db.rawQuery("select * from `transactions_table`");
+
+     return List.generate(maps.length, (i) {
+       return TransactionModel.fromMap(maps[i]);
+     });
+   }
    //
    // Future<List<NotificationModel>> getAllNotifications(MyDatabase) async {
    //   Database db = await MyDatabase;

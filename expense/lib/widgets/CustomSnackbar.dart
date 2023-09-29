@@ -10,6 +10,7 @@ class CustomSnackbar {
       duration: duration,
       backgroundColor: Colors.transparent,
       snackPosition: SnackPosition.BOTTOM,
+
     );
   }
 

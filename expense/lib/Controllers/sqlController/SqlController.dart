@@ -19,8 +19,8 @@ class SqlController extends GetxController{
    // List<CategoryModel>? _categoryList;
    // List<CategoryModel>? get categoryList=>_categoryList;
    //
-   // List<TransactionModel>? _transactionsList;
-   // List<TransactionModel>? get transactionsList=>_transactionsList;
+   List<TransactionModel>? _transactionsList;
+   List<TransactionModel>? get transactionsList=>_transactionsList;
    //
    // List<NotificationModel>? _notificationList;
    // List<NotificationModel>? get notificationList =>_notificationList;
@@ -32,8 +32,8 @@ class SqlController extends GetxController{
    final List<double> _pieTotal=[];
    List<double>? get pieTotal=>_pieTotal;
 
-   // List<TransactionModel>? _specificBankTransactionsList=[];
-   // List<TransactionModel>? get specificBankTransactionsList=>_specificBankTransactionsList;
+   List<TransactionModel>? _specificBankTransactionsList=[];
+   List<TransactionModel>? get specificBankTransactionsList=>_specificBankTransactionsList;
 
    bool? _hasEarlierNotifications;
    bool? get hasEarlierNotifications =>_hasEarlierNotifications;
@@ -55,6 +55,7 @@ class SqlController extends GetxController{
   FindDatabase()async{
      _database = await sqlDb.FindDatabase(_databaseName,_databaseVersion,database);
     await getAllCategories();
+    await getTransactions();
      // getCategories();
      // await getNotifications();
      // await getEarlierNotifications();
@@ -64,7 +65,6 @@ class SqlController extends GetxController{
    category_insert(CategoryModel category)async{
      int id = await sqlDb.category_insert(category,database);
      print(id);
-     Get.to(()=>CategoryTransactionScreen(categoryModel: category,));
      getAllCategories();
      update();
      return id;
@@ -130,16 +130,16 @@ class SqlController extends GetxController{
    //   }
    // }
    //
-   // getTransactions() async{
-   //   SqlDb sqlDb = SqlDb();
-   //   _transactionsList =await sqlDb.getAllTransactions(database);
-   //   if(_transactionsList!.isNotEmpty){
-   //     getPieTransactionList();
-   //     getPieTransactionTotal();
-   //     calculateDifference();
-   //   }
-   //   update();
-   // }
+   getTransactions() async{
+     SqlDb sqlDb = SqlDb();
+     _transactionsList =await sqlDb.getAllTransactions(database);
+     // if(_transactionsList!.isNotEmpty){
+       // getPieTransactionList();
+       // getPieTransactionTotal();
+       // calculateDifference();
+     // }
+     update();
+   }
    //
    // getNotifications()async{
    //   _notificationList?.clear();
@@ -207,27 +207,29 @@ class SqlController extends GetxController{
   //    update();
   //  }
   //
-  //  getSpecificBankTransaction(Banks banks)async{
-  //    _specificBankTransactionsList!.clear();
-  //    print("initialList: "+_specificBankTransactionsList!.length.toString());
-  //    // SqlDb sqlDb =SqlDb();
-  //    _specificBankTransactionsList= List.generate(transactionsList!.length, (i) {
-  //      if(int.parse(transactionsList![i].transactionBankId)==banks.id){
-  //        return TransactionModel(
-  //          transactionId: transactionsList![i].transactionId,
-  //          transactionAmount: transactionsList![i].transactionAmount,
-  //          transactionCategoryId: transactionsList![i].transactionCategoryId,
-  //          transactionDescription: transactionsList![i].transactionDescription,
-  //          transactionTime: transactionsList![i].transactionTime,
-  //          transactionType: transactionsList![i].transactionType,
-  //          transactionBankId: transactionsList![i].transactionBankId,
-  //        );}else{
-  //        return TransactionModel();
-  //      }
-  //
-  //    });
-  //    update();
-  //  }
+   getSpecificBankTransaction(CategoryModel categoryModel)async{
+     _specificBankTransactionsList!.clear();
+     print("initialList: "+_specificBankTransactionsList!.length.toString());
+     // SqlDb sqlDb =SqlDb();
+     _specificBankTransactionsList= List.generate(transactionsList!.length, (i) {
+       if(transactionsList![i].transactionCategoryId==categoryModel.cat_id){
+         return TransactionModel(
+           transactionId: transactionsList![i].transactionId,
+           transactionAmount: transactionsList![i].transactionAmount,
+           transactionCategoryId: transactionsList![i].transactionCategoryId,
+           transactionTime: transactionsList![i].transactionTime,
+           transactionType: transactionsList![i].transactionType,
+           transactionName: transactionsList![i].transactionName,
+           transactionDate: transactionsList![i].transactionDate
+         );
+       }
+       else{
+         return TransactionModel();
+       }
+
+     });
+     update();
+   }
   //
   //
   //  bool? containsTransaction(TransactionModel transactionModel) {

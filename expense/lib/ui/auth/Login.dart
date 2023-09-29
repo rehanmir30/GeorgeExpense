@@ -1,14 +1,14 @@
-import 'package:expense/Controllers/AuthController/AuthController.dart';
 import 'package:expense/ui/auth/Signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:get/get.dart';
 
+import '../../Controllers/AuthController/auth_controller.dart';
 import '../../Controllers/LocalizationController.dart';
 import 'package:expense/custom_widget/MyAlertDialog.dart';
 import '../../widgets/background.dart';
-import 'ForgotPassword.dart';
+import 'package:expense/ui/auth/ForgotPassword.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "welcome".tr,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 150,
                     ),
                     TextFormField(
@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     InkWell(
                       onTap: ()async{
                         if(_formKey.currentState!.validate()){
-                          Get.find<AuthController>().SignIn();
+                          Get.find<AuthController>().signIn();
                         }
                           
                         // Get.offAll(const HomeScreen(),transition: Transition.zoom);

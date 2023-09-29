@@ -24,11 +24,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         body: SafeArea(
           child: Stack(
       children: [
-          BackgroundImg(),
+          const BackgroundImg(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                  "Whoops 😯",
                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                ),
@@ -36,16 +36,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Align(
+                    const Align(
                         alignment: Alignment.center,
                         child: Text("Forgot your password? Don't worry. We got you",style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),)).marginOnly(top: 30),
-                    Text("Provide us with your email, we'll send you an email with reset password link.").marginOnly(top: 12),
+                    const Text("Provide us with your email, we'll send you an email with reset password link.").marginOnly(top: 12),
                     TextFormField(
                       controller: emailController,
                       // cursorColor: AppColors.red,
                       keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black),
+                      decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 10, vertical: 20),
                           enabledBorder: OutlineInputBorder(
@@ -63,7 +63,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       decoration: BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text(
+                      child: const Text(
                         "Send Email",
                         style: TextStyle(color: Colors.white),
                       ).marginSymmetric(vertical: 14),

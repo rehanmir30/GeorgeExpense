@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expense/Controllers/AuthController/AuthController.dart';
+import 'package:expense/Controllers/AuthController/auth_controller.dart';
 import 'package:expense/DB/SharedPreference/SharedPref.dart';
 import 'package:expense/ui/home/home.dart';
 import 'package:expense/widgets/CustomSnackbar.dart';
@@ -13,7 +13,7 @@ import '../Models/user_model.dart';
 class DatabaseHelper{
 
 
-Future<void> SignUp()async{
+Future<void> signUp()async{
     try {
 
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: Get.find<AuthController>().email??"", password: Get.find<AuthController>().password??"");
@@ -33,7 +33,7 @@ Future<void> SignUp()async{
           .set(userModel.toMap());
 
       CustomSnackbar.show("Sign Up Successful", AppColor.kBlack);
-      Get.find<AuthController>().ClearFields();
+      Get.find<AuthController>().clearFields();
 
       await Get.find<AuthController>().setUserData(userModel);
       await SharedPref.saveUser(userModel);

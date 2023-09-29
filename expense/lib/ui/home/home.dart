@@ -3,6 +3,7 @@ import 'package:d_chart/commons/data_model.dart';
 import 'package:d_chart/ordinal/pie.dart';
 import 'package:expense/AppColors/colors.dart';
 import 'package:expense/Controllers/DashBoardController/dashboard_controller.dart';
+import 'package:expense/Controllers/sqlController/SqlController.dart';
 import 'package:expense/ui/home/CreateCategory/category_transaction_screen.dart';
 import 'package:expense/ui/home/CreateCategory/create_category_screen.dart';
 import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
@@ -235,11 +236,18 @@ class _HomeScreenState extends State<HomeScreen>
                         child: InkWell(
                             overlayColor: const MaterialStatePropertyAll(
                                 Colors.transparent),
-                            onTap: () {
+                            onTap: () async{
                               if (index == controller.categoryModelList!.length-1) {
                                 Get.to(() => const CreateCategoryScreen());
                               }else{
-                                Get.to(()=>CategoryTransactionScreen(categoryModel: controller.categoryModelList?[index],));
+                                if(controller.categoryModelList?[index].cat_type==0){
+                                  await Get.find<SqlController>().getSpecificBankTransaction(controller.categoryModelList![index]);
+                                  Get.to(()=>CategoryTransactionScreen(categoryModel: controller.categoryModelList?[index]));
+                                }else{
+                                  Get.to(()=>SubCategories(controller.categoryModelList?[index]));
+                                }
+
+
                               }
                             },
                             child: Image.asset(

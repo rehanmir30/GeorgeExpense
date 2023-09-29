@@ -3,10 +3,12 @@ import 'package:expense/Controllers/EmojiPopUpController/EmojiPopUpController.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Models/category.dart';
 import 'create_category_screen.dart';
 
 class SubCategories extends StatefulWidget {
-  const SubCategories({super.key});
+  final CategoryModel? categoryModel;
+  const SubCategories(this.categoryModel,{super.key});
 
   @override
   State<SubCategories> createState() => _Sub_CategoriesState();
@@ -39,6 +41,9 @@ class _Sub_CategoriesState extends State<SubCategories> {
 
               GetBuilder<EmojiPopUpController>(
                 builder: (controller) {
+                  if(controller.selectedList?.isEmpty??true){
+                    return Center(child: Text("Add Sub Category"),);
+                  }
                   return GridView.builder(
                     shrinkWrap: true,
                     primary: false,

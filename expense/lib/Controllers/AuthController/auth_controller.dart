@@ -10,7 +10,7 @@ class AuthController extends GetxController{
    String? name;
    String? email;
    String? password;
-   String? confirm_password;
+   String? confirmPassword;
 
    onChangeName(String? enteredName)async{
     name = enteredName;
@@ -22,13 +22,13 @@ class AuthController extends GetxController{
     update();
    }
 
-   onChangePassword(String? EnteredPassword)async{
-    password = EnteredPassword;
+   onChangePassword(String? enteredPassword)async{
+    password = enteredPassword;
     update();
    }
 
-   onChangeConfirmPassword(String? EnteredConfirmPassword)async{
-    confirm_password = EnteredConfirmPassword;
+   onChangeConfirmPassword(String? enteredConfirmPassword)async{
+    confirmPassword = enteredConfirmPassword;
     update();
    }
 
@@ -37,22 +37,22 @@ class AuthController extends GetxController{
     update();
   }
 
-  SignUp()async{
-    await DatabaseHelper().SignUp();
+  signUp()async{
+    await DatabaseHelper().signUp();
     update();
   }
 
-  SignIn()async{
+  signIn()async{
     await DatabaseHelper().SignIn();
     update();
   }
 
 
-  ClearFields()async{
+  clearFields()async{
     name=null;
     email=null;
     password=null;
-    confirm_password=null;
+    confirmPassword=null;
     update();
   }
   

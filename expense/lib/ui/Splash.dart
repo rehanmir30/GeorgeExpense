@@ -1,7 +1,10 @@
-import 'package:expense/ui/auth/Login.dart';
+import 'package:expense/Controllers/AuthController/auth_controller.dart';
+import 'package:expense/DB/SharedPreference/SharedPref.dart';
+import 'package:expense/Models/user_model.dart';
+import 'package:expense/ui/auth/login.dart';
+import 'package:expense/ui/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,16 +17,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   bool _isVisible = false;
 
-
-  @override
+ @override
   void initState() {
+    super.initState();
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         _isVisible = true;
       });
     });
-    Future.delayed(const Duration(seconds: 3),(){
-      Get.offAll(LoginScreen(),transition: Transition.zoom);
+    Future.delayed(const Duration(milliseconds: 3000), () async {
+      AuthController commonController = Get.find<AuthController>();
+      UserModel? savedUser = await SharedPref.getUser();
+      if (savedUser != null) {
+
+        await commonController.setUserData(savedUser);
+        Get.offAll(()=>  const HomeScreen());
+      }else{
+        Get.offAll(const LoginScreen());
+      }
     });
   }
 
@@ -33,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             color: Colors.white
         ),
         child: Center(
@@ -47,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: _isVisible ? 150 : 0,
                     height: _isVisible ? 150 : 0,
                     curve: Curves.bounceIn,
-                    duration: Duration(seconds: 1),
-                    decoration: BoxDecoration(
+                    duration: const Duration(seconds: 1),
+                    decoration: const BoxDecoration(
                       color: Colors.transparent,
                       image: DecorationImage(
                         image: AssetImage("assets/images/logo_black.png"),
@@ -56,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   )),
               // SizedBox(height: 20,),
-              Container(
+              const SizedBox(
                 height: 40,
                 width: 40,
                 child: CircularProgressIndicator(

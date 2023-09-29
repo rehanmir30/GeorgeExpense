@@ -1,13 +1,15 @@
 import 'package:expense/Controllers/DataController/DataController.dart';
+import 'package:expense/Controllers/sqlController/SqlController.dart';
 import 'package:expense/Models/transaction_model.dart';
+import 'package:expense/ui/home/home.dart';
+import 'package:expense/widgets/CustomSnackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import '../../../AppColors/colors.dart';
 import '../../../Controllers/EmojiPopUpController/EmojiPopUpController.dart';
-import '../../../Models/TransactionEntryListModel.dart';
 import '../../../Models/category.dart';
 import 'package:intl/intl.dart';
 
@@ -31,6 +33,8 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
   void initState() {
     super.initState();
     tabController = TabController(length: 24, vsync: this);
+    transactionEntryList?.addAll(Get.find<SqlController>().specificBankTransactionsList??[]);
+    print(transactionEntryList?[0].transactionDate);
   }
 
   @override
@@ -42,33 +46,48 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
   Widget build(BuildContext context) {
     DateTime? selectedDate;
     TimeOfDay? timeOfDay;
-    bool isIncome= true;
+    bool isIncome= false;
     int indexs=0;
 
     return GetBuilder<DataController>(builder: (controller) {
+      print(transactionEntryList?[indexs].transactionTime);
       return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColor.kWhite,
         appBar: AppBar(
           leading: InkWell(
               onTap: (){
-                Get.back();
+                // Get.back();
+                Get.offAll(HomeScreen());
               },
               child: const Icon(Icons.arrow_back_ios,color: AppColor.primaryColor,)),
           backgroundColor: AppColor.kWhite,
           elevation: 0,
           actions: [
             TextButton(onPressed: (){
+              if(transactionEntryList?.any((element) => (element.transactionAmount==null || element.transactionName==null || element.transactionName=="" || element.transactionAmount==""))??true){
+              CustomSnackbar.show("Please fIll the fields to save", AppColor.kRed);
+              return;
+            }
+
+              if(transactionEntryList?.isNotEmpty??false){
+                for(var i in transactionEntryList??[]){
+                  Get.find<SqlController>().transaction_insert(i);
+                }
+                Get.offAll(HomeScreen());
+              }else{
+                CustomSnackbar.show("Please add some transactions to save", AppColor.kRed);
+              }
 
 
-            }, child: Text('Save',style: TextStyle(color: AppColor.kBlack,),))
+            }, child: const Text('Save',style: TextStyle(color: AppColor.kBlack,),))
           ],
         ),
         body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Align(
                   alignment: Alignment.center,
                   child: Container(
@@ -98,8 +117,8 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                         )),
                   )
               ),
-              SizedBox(height: 5,),
-              if(transactionEntryList?.length!=0)Row(
+              const SizedBox(height: 5,),
+              if(transactionEntryList?.isNotEmpty??false)Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
@@ -109,22 +128,23 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                         controller.updateUI();
                       },
                       child: Text(
-                          DateFormat('dd MMMM yyy').format((transactionEntryList?[indexs].transactionDate)??DateTime.now()),style: const TextStyle(color: AppColor.kGreen,fontSize: 20),)),
-                  SizedBox(width: 10,),
+                          DateFormat('dd MMMM yyy').format(DateTime.parse(transactionEntryList?[indexs].transactionDate)??DateTime.now()),style: const TextStyle(color: AppColor.kGreen,fontSize: 20),)),
+                  const SizedBox(width: 10,),
                   InkWell(
                     onTap: () async {
                       transactionEntryList?[indexs].transactionTime = await controller.selectTime(context);
                       controller.updateUI();
                     },
                     child: Text(
-                      (transactionEntryList?[indexs].transactionTime != null ? ((transactionEntryList?[indexs].transactionTime))?.format(context) : TimeOfDay.now().format(context)) ?? '',
-                      style: TextStyle(color: AppColor.kGreen, fontSize: 20),
+                      // (transactionEntryList?[indexs].transactionTime != null ? ((TimeOfDay.fromDateTime(transactionEntryList?[indexs].transactionTime)))?.format(context) : TimeOfDay.now().format(context)) ?? '',
+                      (transactionEntryList?[indexs].transactionTime != null ? ((transactionEntryList?[indexs].transactionTime)) : ''),
+                      style: const TextStyle(color: AppColor.kGreen, fontSize: 20),
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -149,9 +169,9 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                     textSize: 16.0,
                     onChanged: (bool state) {
 
-                      (isIncome==true)
-                          ? (transactionEntryList?[indexs].transactionType='0')
-                          :(transactionEntryList?[indexs].transactionType = '1');
+                      (isIncome)
+                          ? (transactionEntryList?[indexs].transactionType='1')
+                          :(transactionEntryList?[indexs].transactionType = '0');
 
                       isIncome=state;
                       controller.updateUI();
@@ -163,7 +183,11 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                       (isIncome==true)
                           ? (transactionEntryList?[indexs].transactionType='0')
                           :(transactionEntryList?[indexs].transactionType = '1');
-                      isIncome=!isIncome;
+                      if(isIncome){
+                        isIncome=false;
+                      }else{
+                        isIncome = true;
+                      }
                       controller.updateUI();
 
                       // print(isIncome);
@@ -183,19 +207,19 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                 ],
               ),
 
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
 
-              Row(
+              if(widget.categoryModel?.main_cat_id!="general")Row(
                 children: [
-                  SizedBox(width: 20,),
+                  const SizedBox(width: 20,),
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColor.kBlack,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.keyboard_arrow_down_outlined,color: AppColor.kWhite,),
+                    child: const Icon(Icons.keyboard_arrow_down_outlined,color: AppColor.kWhite,),
                   ),
-                  SizedBox(width: 10,),
+                  const SizedBox(width: 10,),
 
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -298,16 +322,16 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
 
                 ],),
 
-              SizedBox(height: 40,),
+              const SizedBox(height: 40,),
 
 
               (transactionEntryList==null || (transactionEntryList?.isEmpty??true ))
                   ?Center(child: TextButton(
                   onPressed: (){
-                    transactionEntryList?.add(TransactionModel(transactionCategoryId: widget.categoryModel?.cat_id,transactionName: "",transactionAmount: "",transactionType: (isIncome)?"0":"1"));
+                    transactionEntryList?.add(TransactionModel(transactionCategoryId: widget.categoryModel?.cat_id,transactionName: "",transactionAmount: "",transactionType: (isIncome)?"0":"1",transactionDate: DateTime.now(),transactionTime: TimeOfDay.now()));
                     controller.updateUI();
                   },
-                  child: Text('Add Transactions')))
+                  child: const Text('Add Transactions')))
                   :Expanded(
                         child: ListView.separated(
                 // shrinkWrap: true,
@@ -318,7 +342,7 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                           child: Row(children: [
 
                             Expanded(child: TextFormField(
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: "Enter Resource",
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -331,24 +355,29 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                               onTap: (){
                                 indexs=index;
                                 controller.updateUI();
+                                print(transactionEntryList?[indexs].transactionType);
                               },
                               textAlign: TextAlign.center,
                             )),
                             Expanded(child: TextFormField(
-                              style: TextStyle(color: (transactionEntryList?[index].transactionType=='0')?AppColor.kRed:AppColor.kGreen),
-                              decoration: InputDecoration(
+                              style: TextStyle(color: (transactionEntryList?[indexs].transactionType=='0')?AppColor.kRed:AppColor.kGreen),
+                              decoration: const InputDecoration(
                                   hintText: "Enter Amount",
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
+                            
                               ),
+                              keyboardType: TextInputType.number,
                               onChanged: (value){
                                 transactionEntryList?[index].transactionAmount= value;
 
                               },
                               onTap: (){
 
-                                print(transactionEntryList?[index].transactionType);
+                                if (kDebugMode) {
+                                  print(transactionEntryList?[index].transactionType);
+                                }
 
                                 indexs=index;
                                 controller.updateUI();
@@ -357,27 +386,32 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                             )),
                           ],));
               }, separatorBuilder: (context, index) {
-                return Divider(thickness: 1,color: AppColor.kGrey,);
+                return const Divider(thickness: 1,color: AppColor.kGrey,);
               }, itemCount: transactionEntryList?.length??0),
                       ),
 
 
             ]).marginSymmetric(horizontal: 15),
            floatingActionButton: ((transactionEntryList?.isEmpty??true))
-               ?SizedBox.shrink()
+               ?const SizedBox.shrink()
                :FloatingActionButton.extended(
           backgroundColor: AppColor.kBlack,
             onPressed: (){
+            if(transactionEntryList?.any((element) => (element.transactionAmount==null || element.transactionName==null || element.transactionName=="" || element.transactionAmount==""))??true){
+              CustomSnackbar.show("Please FIll the fields to add new One", AppColor.kRed);
+              return;
+
+            }
             indexs=transactionEntryList!.length-1;
-          transactionEntryList?.add(TransactionModel(transactionCategoryId: widget.categoryModel?.cat_id,transactionName: "",transactionAmount: "",transactionType: (isIncome==true)?"0":"1"));
+          transactionEntryList?.add(TransactionModel(transactionCategoryId: (widget.categoryModel?.main_cat_id=="general")?widget.categoryModel?.cat_id: Get.find<EmojiPopUpController>().globalCategories,transactionName: "",transactionAmount: "",transactionType: (isIncome==true)?"0":"1",transactionDate: DateTime.now(),transactionTime: TimeOfDay.now()));
           controller.updateUI();
-        }, label: Text('+ Add Transaction')),
+        }, label: const Text('+ Add Transaction')),
 
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: const [
               Text('Total Amount:',style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),),
               Text('1000000',style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),),
             ],),

@@ -5,12 +5,14 @@ import 'package:expense/Controllers/sqlController/SqlController.dart';
 import 'package:expense/Models/category.dart';
 import 'package:expense/Models/transaction_model.dart';
 import 'package:expense/custom_widget/CustomEmojiPicker/custom_emoji_picker.dart';
+import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
 import 'package:expense/widgets/CustomSnackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import '../../../Controllers/EmojiPopUpController/EmojiPopUpController.dart';
+import 'category_transaction_screen.dart';
 
 class CreateNewCategory extends StatefulWidget {
   const CreateNewCategory({super.key});
@@ -237,20 +239,33 @@ class _CreateNewCategoryState extends State<CreateNewCategory>
           InkWell(
             onTap: () async {
               if(sublevelCheck){
-                // Get.to(()=>const SubCategories());
+                if((Get.find<EmojiPopUpController>().globalCategories!=null && Get.find<EmojiPopUpController>().globalCategories!="") || (Get.find<EmojiPopUpController>().selectedEmoji!=null && Get.find<EmojiPopUpController>().selectedEmoji!="")){
+                  var r = UniqueKey().toString();
+                  CategoryModel? category=CategoryModel(
+                    cat_id: r.toString(),
+                    cat_name: Get.find<EmojiPopUpController>().globalCategories,
+                    cat_image: Get.find<EmojiPopUpController>().selectedEmoji,
+                    cat_type: 1,
+                    main_cat_id: "general",
+                  );
+                  await Get.find<SqlController>().category_insert(category);
+                  Get.to(()=>SubCategories(category));
+
+                }else{
+                  CustomSnackbar.show("Please fill all fields", AppColor.kRed);
+                }
               }else{
                 if((Get.find<EmojiPopUpController>().globalCategories!=null && Get.find<EmojiPopUpController>().globalCategories!="") || (Get.find<EmojiPopUpController>().selectedEmoji!=null && Get.find<EmojiPopUpController>().selectedEmoji!="")){
                   var r = UniqueKey().toString();
-                  await Get.find<SqlController>()
-                      .category_insert(
-                      CategoryModel(
-                        cat_id: r.toString(),
-                        cat_name: Get.find<EmojiPopUpController>().globalCategories,
-                        cat_image: Get.find<EmojiPopUpController>().selectedEmoji,
-                        cat_type: 0,
-                        main_cat_id: "general",
-                      )
+                  CategoryModel? category=CategoryModel(
+                    cat_id: r.toString(),
+                    cat_name: Get.find<EmojiPopUpController>().globalCategories,
+                    cat_image: Get.find<EmojiPopUpController>().selectedEmoji,
+                    cat_type: 0,
+                    main_cat_id: "general",
                   );
+                  await Get.find<SqlController>().category_insert(category);
+                  Get.to(()=>CategoryTransactionScreen(categoryModel: category,));
                 }else{
                   CustomSnackbar.show("Please fill all fields", AppColor.kRed);
                 }
