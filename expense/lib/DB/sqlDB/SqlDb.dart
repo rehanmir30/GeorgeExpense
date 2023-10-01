@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -46,7 +47,7 @@ class SqlDb {
       'CREATE TABLE Categories(id INTEGER PRIMARY KEY AUTOINCREMENT,cat_id TEXT, cat_name TEXT, cat_image TEXT, cat_type NUM,main_cat_id TEXT)',
     );
     await db.execute(
-      'CREATE TABLE transactions_table(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_cat_id TEXT,transaction_amount TEXT, transaction_type TEXT,transaction_name TEXT, transaction_date TEXT,transaction_time TEXT, CONSTRAINT fk_transaction_cat_id FOREIGN KEY(transaction_cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE)',
+      'CREATE TABLE transactions_table(transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,transaction_cat_id TEXT,transaction_amount TEXT, transaction_type TEXT,transaction_name TEXT, transaction_date TEXT,transaction_time_hour INTEGER,transaction_time_minute INTEGER , CONSTRAINT fk_transaction_cat_id FOREIGN KEY(transaction_cat_id) REFERENCES category(cat_id)  ON DELETE CASCADE)',
     );
     // await db.execute(
     //   'CREATE TABLE category(category_id INTEGER PRIMARY KEY AUTOINCREMENT, category_name TEXT)',
@@ -124,11 +125,11 @@ class SqlDb {
    // }
    //
    //Insert transaction
-   Future<int> transaction_insert(TransactionModel transaction, MyDatabase) async {
+   Future<int> transaction_insert(BuildContext context,TransactionModel transaction, MyDatabase) async {
      // Get a reference to the database.
      final Database db = await MyDatabase;
      try {
-       int id = await db.insert('transactions_table', transaction.toMap());
+       int id = await db.insert('transactions_table', transaction.toMap(context));
        print('Db transaction Inserted');
        return id;
      } catch (e) {

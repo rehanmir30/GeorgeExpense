@@ -34,7 +34,7 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
     super.initState();
     tabController = TabController(length: 24, vsync: this);
     transactionEntryList?.addAll(Get.find<SqlController>().specificBankTransactionsList??[]);
-    print(transactionEntryList?[0].transactionDate);
+    // print(transactionEntryList?[0].transactionDate);
   }
 
   @override
@@ -47,10 +47,10 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
     DateTime? selectedDate;
     TimeOfDay? timeOfDay;
     bool isIncome= false;
-    int indexs=0;
+
 
     return GetBuilder<DataController>(builder: (controller) {
-      print(transactionEntryList?[indexs].transactionTime);
+      // print(transactionEntryList?[controller.indexs??0].transactionTime);
       return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: AppColor.kWhite,
@@ -64,7 +64,8 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
           backgroundColor: AppColor.kWhite,
           elevation: 0,
           actions: [
-            TextButton(onPressed: (){
+            TextButton(onPressed: () async {
+             print(transactionEntryList?.any((element) => (element.transactionAmount==null || element.transactionName==null || element.transactionName=="" || element.transactionAmount=="")));
               if(transactionEntryList?.any((element) => (element.transactionAmount==null || element.transactionName==null || element.transactionName=="" || element.transactionAmount==""))??true){
               CustomSnackbar.show("Please fIll the fields to save", AppColor.kRed);
               return;
@@ -72,8 +73,9 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
 
               if(transactionEntryList?.isNotEmpty??false){
                 for(var i in transactionEntryList??[]){
-                  Get.find<SqlController>().transaction_insert(i);
+                 await Get.find<SqlController>().transaction_insert(context,i);
                 }
+                Get.find<SqlController>().getTransactions();
                 Get.offAll(HomeScreen());
               }else{
                 CustomSnackbar.show("Please add some transactions to save", AppColor.kRed);
@@ -124,20 +126,20 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                   InkWell(
                       onTap: ()async{
 
-                       transactionEntryList?[indexs].transactionDate= await controller.selectDate(context);
+                       transactionEntryList?[controller.indexs??0].transactionDate= await controller.selectDate(context);
                         controller.updateUI();
                       },
                       child: Text(
-                          DateFormat('dd MMMM yyy').format(DateTime.parse(transactionEntryList?[indexs].transactionDate)??DateTime.now()),style: const TextStyle(color: AppColor.kGreen,fontSize: 20),)),
+                          DateFormat('dd MMMM yyy').format(transactionEntryList?[controller.indexs??0].transactionDate??DateTime.now()),style: const TextStyle(color: AppColor.kGreen,fontSize: 20),)),
                   const SizedBox(width: 10,),
                   InkWell(
                     onTap: () async {
-                      transactionEntryList?[indexs].transactionTime = await controller.selectTime(context);
+                      transactionEntryList?[controller.indexs??0].transactionTime = await controller.selectTime(context);
                       controller.updateUI();
                     },
                     child: Text(
-                      // (transactionEntryList?[indexs].transactionTime != null ? ((TimeOfDay.fromDateTime(transactionEntryList?[indexs].transactionTime)))?.format(context) : TimeOfDay.now().format(context)) ?? '',
-                      (transactionEntryList?[indexs].transactionTime != null ? ((transactionEntryList?[indexs].transactionTime)) : ''),
+                      (transactionEntryList?[controller.indexs??0].transactionTime != null ? (transactionEntryList?[controller.indexs??0].transactionTime)?.format(context) : TimeOfDay.now().format(context)) ?? '',
+                      // (transactionEntryList?[controller.indexs??0].transactionTime != null ? ((transactionEntryList?[controller.indexs??0].transactionTime)) : ''),
                       style: const TextStyle(color: AppColor.kGreen, fontSize: 20),
                     ),
                   ),
@@ -170,8 +172,8 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                     onChanged: (bool state) {
 
                       (isIncome)
-                          ? (transactionEntryList?[indexs].transactionType='1')
-                          :(transactionEntryList?[indexs].transactionType = '0');
+                          ? (transactionEntryList?[controller.indexs??0].transactionType='1')
+                          :(transactionEntryList?[controller.indexs??0].transactionType = '0');
 
                       isIncome=state;
                       controller.updateUI();
@@ -181,8 +183,8 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                     },
                     onTap: () {
                       (isIncome==true)
-                          ? (transactionEntryList?[indexs].transactionType='0')
-                          :(transactionEntryList?[indexs].transactionType = '1');
+                          ? (transactionEntryList?[controller.indexs??0].transactionType='0')
+                          :(transactionEntryList?[controller.indexs??0].transactionType = '1');
                       if(isIncome){
                         isIncome=false;
                       }else{
@@ -342,6 +344,7 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                           child: Row(children: [
 
                             Expanded(child: TextFormField(
+                              initialValue: transactionEntryList?[index].transactionName??"",
                               decoration: const InputDecoration(
                                 hintText: "Enter Resource",
                                 border: InputBorder.none,
@@ -352,35 +355,41 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                                 transactionEntryList?[index].transactionName= value;
 
                               },
-                              onTap: (){
-                                indexs=index;
-                                controller.updateUI();
-                                print(transactionEntryList?[indexs].transactionType);
+                              onTap: () async {
+                                // setState(() {
+                                //   controller?.indexs=index;
+                                // });
+                               await controller.setNewIndex(index);
+                                // controller.updateUI();
+                                // print(transactionEntryList?[index].transactionType);
                               },
                               textAlign: TextAlign.center,
                             )),
                             Expanded(child: TextFormField(
-                              style: TextStyle(color: (transactionEntryList?[indexs].transactionType=='0')?AppColor.kRed:AppColor.kGreen),
+                              initialValue: transactionEntryList?[index].transactionAmount??"",
+                              style: TextStyle(color: (transactionEntryList?[index].transactionType=='0')?AppColor.kRed:AppColor.kGreen),
                               decoration: const InputDecoration(
                                   hintText: "Enter Amount",
                                 border: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
-                            
+
                               ),
                               keyboardType: TextInputType.number,
                               onChanged: (value){
                                 transactionEntryList?[index].transactionAmount= value;
 
                               },
-                              onTap: (){
+                              onTap: () async {
+                               // setState(() {
+                                await controller.setNewIndex(index);
+                               // // });
+                               //  if (kDebugMode) {
+                               //    print(transactionEntryList?[index].transactionType);
+                               //  }
 
-                                if (kDebugMode) {
-                                  print(transactionEntryList?[index].transactionType);
-                                }
 
-                                indexs=index;
-                                controller.updateUI();
+                                // controller.updateUI();
                               },
                               textAlign: TextAlign.center,
                             )),
@@ -396,14 +405,14 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
                ?const SizedBox.shrink()
                :FloatingActionButton.extended(
           backgroundColor: AppColor.kBlack,
-            onPressed: (){
+            onPressed: () async {
             if(transactionEntryList?.any((element) => (element.transactionAmount==null || element.transactionName==null || element.transactionName=="" || element.transactionAmount==""))??true){
               CustomSnackbar.show("Please FIll the fields to add new One", AppColor.kRed);
               return;
 
             }
-            indexs=transactionEntryList!.length-1;
-          transactionEntryList?.add(TransactionModel(transactionCategoryId: (widget.categoryModel?.main_cat_id=="general")?widget.categoryModel?.cat_id: Get.find<EmojiPopUpController>().globalCategories,transactionName: "",transactionAmount: "",transactionType: (isIncome==true)?"0":"1",transactionDate: DateTime.now(),transactionTime: TimeOfDay.now()));
+            await controller.setNewIndex(transactionEntryList!.length-1);
+          transactionEntryList?.add(TransactionModel(transactionCategoryId: (widget.categoryModel?.main_cat_id=="general")?widget.categoryModel?.cat_id: Get.find<EmojiPopUpController>().globalCategories,transactionName: "",transactionAmount: "0",transactionType: (isIncome==true)?"0":"1",transactionDate: DateTime.now(),transactionTime: TimeOfDay.now()));
           controller.updateUI();
         }, label: const Text('+ Add Transaction')),
 
@@ -411,9 +420,10 @@ class _CategoryTransactionScreenState extends State<CategoryTransactionScreen> w
           padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children:  [
               Text('Total Amount:',style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),),
-              Text('1000000',style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),),
+              Text("\$ ${transactionEntryList?.map((transaction) => int.parse(transaction.transactionAmount?? 0.0)).reduce((a, b) => a + b)}",
+                style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),),
             ],),
         ),
       );

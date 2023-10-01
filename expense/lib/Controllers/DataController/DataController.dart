@@ -13,13 +13,30 @@ class DataController extends GetxController{
   List<CategoryModel>? _categoryModelList=[];
   List<CategoryModel>? get categoryModelList=>_categoryModelList;
 
+  List<CategoryModel>? _subCategoryModelList=[];
+  List<CategoryModel>? get subCategoryModelList=>_subCategoryModelList;
+
+  int? _indexs=0;
+  int? get indexs=>_indexs;
+
+
+  setNewIndex(int? index){
+    _indexs = index;
+    update();
+  }
+
+
+  getSelectedSubCategories(List<CategoryModel>? categoryList)async{
+    _subCategoryModelList = categoryList;
+    print(_subCategoryModelList?.length);
+    update();
+  }
+
 
   getAllCategories(List<CategoryModel>? categoriesList)async{
     _categoryModelList = categoriesList;
     update();
   }
-
-
 
 
 

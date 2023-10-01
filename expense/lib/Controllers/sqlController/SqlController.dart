@@ -1,8 +1,11 @@
+import 'package:expense/DB/DatabaseHelper.dart';
 import 'package:expense/Models/category.dart';
 import 'package:expense/ui/home/CreateCategory/category_transaction_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../DB/sqlDB/SqlDb.dart';
+import '../../Models/top_month_expense_model.dart';
 import '../../Models/transaction_model.dart';
 import '../DataController/DataController.dart';
 
@@ -21,6 +24,17 @@ class SqlController extends GetxController{
    //
    List<TransactionModel>? _transactionsList;
    List<TransactionModel>? get transactionsList=>_transactionsList;
+
+   //Recent Transactions
+   List<TransactionModel>? _recentTransactionsList;
+   List<TransactionModel>? get recentTransactionsList=>_recentTransactionsList;
+
+   double? _monthlyIncome =0.0;
+   double? get monthlyIncome =>_monthlyIncome;
+
+   double? _monthlyExpense =0.0;
+   double? get monthlyExpense =>_monthlyExpense;
+
    //
    // List<NotificationModel>? _notificationList;
    // List<NotificationModel>? get notificationList =>_notificationList;
@@ -34,6 +48,9 @@ class SqlController extends GetxController{
 
    List<TransactionModel>? _specificBankTransactionsList=[];
    List<TransactionModel>? get specificBankTransactionsList=>_specificBankTransactionsList;
+
+   List<TopMonthExpenseModel> _topMonthExpense=[];
+   List<TopMonthExpenseModel> get topMonthExpense=>_topMonthExpense;
 
    bool? _hasEarlierNotifications;
    bool? get hasEarlierNotifications =>_hasEarlierNotifications;
@@ -70,18 +87,68 @@ class SqlController extends GetxController{
      return id;
    }
 
-   insert_entries_in_recpected_tables(CategoryModel categoryModel)async{
 
-     await category_insert(categoryModel);
-     if(categoryModel.transactionList!=null && (categoryModel.transactionList?.isNotEmpty??false)){
-       for(var i in categoryModel.transactionList!){
-         print(i.transactionName);
-         await transaction_insert(i);
-
-       }
-     }
-
+  monthlyIncomeFunction()async{
+     _monthlyIncome = transactionsList?.where((transaction) => transaction.transactionType == "1").map((transaction) => transaction.transactionAmount).fold(0.0, (a, b) => double.parse(a.toString()) + double.parse(b.toString()));
+  print(transactionsList?.where((transaction) => transaction.transactionType == "1").map((transaction) => transaction.transactionAmount).fold(0.0, (a, b) => double.parse(a.toString()) + double.parse(b.toString())).toString());
+   update();
    }
+
+
+   monthlyExpenseFunction()async{
+     _monthlyExpense = transactionsList?.where((transaction) => transaction.transactionType == "0").map((transaction) => transaction.transactionAmount).fold(0.0, (a, b) => double.parse(a.toString()) + double.parse(b.toString()));
+     print(transactionsList?.where((transaction) => transaction.transactionType == "0").map((transaction) => transaction.transactionAmount).fold(0.0, (a, b) => double.parse(a.toString()) + double.parse(b.toString())).toString());
+     update();
+   }
+
+
+   getSelectedSubCategories(CategoryModel? model) async {
+     DataController dataController = Get.find<DataController>();
+     List<CategoryModel>? listCategories;
+
+     // Retrieve all categories from the database
+     listCategories = await sqlDb.getAllCategories(database);
+
+     // Filter categories by the specified cat_id
+     List<CategoryModel>? filteredCategories = listCategories
+         .where((category) => category.main_cat_id == model?.cat_id)
+         .toList();
+
+     // Add a default category (e.g., "Add Button") to the filtered list
+     filteredCategories.insert(
+       0,
+       CategoryModel(
+         transactionList: [],
+         cat_id: "0",
+         cat_image: "assets/images/addIcon.png",
+         cat_name: "Add Button",
+         cat_type: "2",
+         id: "000",
+         main_cat_id: "addButton",
+       ),
+     );
+
+     // Reverse the filtered list if needed
+     filteredCategories = filteredCategories.reversed.toList();
+
+     // Update the data controller with the filtered categories
+     await dataController.getSelectedSubCategories(filteredCategories);
+     update();
+   }
+
+
+   // insert_entries_in_recpected_tables(CategoryModel categoryModel)async{
+   //
+   //   await category_insert(categoryModel);
+   //   if(categoryModel.transactionList!=null && (categoryModel.transactionList?.isNotEmpty??false)){
+   //     for(var i in categoryModel.transactionList!){
+   //       print(i.transactionName);
+   //       // await transaction_insert(context,i);
+   //
+   //     }
+   //   }
+   //
+   // }
 
    // notification_insert(NotificationModel notificationModel)async{
    //   int id = await sqlDb.notification_insert(notificationModel,database);
@@ -90,9 +157,9 @@ class SqlController extends GetxController{
    //   return id;
    // }
    //
-   transaction_insert(TransactionModel transaction) async {
+   transaction_insert(BuildContext context, TransactionModel transaction) async {
      SqlDb sqlDb = SqlDb();
-     await sqlDb.transaction_insert(transaction, database);
+     await sqlDb.transaction_insert(context,transaction, database);
     //  await getTransactions();
     //  await getPieTransactionList();
      update();
@@ -133,11 +200,28 @@ class SqlController extends GetxController{
    getTransactions() async{
      SqlDb sqlDb = SqlDb();
      _transactionsList =await sqlDb.getAllTransactions(database);
+     monthlyIncomeFunction();
+     monthlyExpenseFunction();
+     if(transactionsList?.isNotEmpty??false){
+       calculateTopMonthExpenses();
+       getRecentTransactions();
+     }
      // if(_transactionsList!.isNotEmpty){
        // getPieTransactionList();
        // getPieTransactionTotal();
        // calculateDifference();
      // }
+     update();
+   }
+
+
+   calculateTopMonthExpenses()async{
+      _topMonthExpense = DatabaseHelper().calculateTopMonthExpenses(transactionsList!,Get.find<DataController>().categoryModelList!);
+     update();
+   }
+
+   getRecentTransactions()async{
+     _recentTransactionsList =DatabaseHelper().getRecentTransactions(transactionsList!,5);
      update();
    }
    //
@@ -207,30 +291,28 @@ class SqlController extends GetxController{
   //    update();
   //  }
   //
-   getSpecificBankTransaction(CategoryModel categoryModel)async{
-     _specificBankTransactionsList!.clear();
-     print("initialList: "+_specificBankTransactionsList!.length.toString());
-     // SqlDb sqlDb =SqlDb();
-     _specificBankTransactionsList= List.generate(transactionsList!.length, (i) {
-       if(transactionsList![i].transactionCategoryId==categoryModel.cat_id){
-         return TransactionModel(
-           transactionId: transactionsList![i].transactionId,
-           transactionAmount: transactionsList![i].transactionAmount,
-           transactionCategoryId: transactionsList![i].transactionCategoryId,
-           transactionTime: transactionsList![i].transactionTime,
-           transactionType: transactionsList![i].transactionType,
-           transactionName: transactionsList![i].transactionName,
-           transactionDate: transactionsList![i].transactionDate
-         );
-       }
-       else{
-         return TransactionModel();
-       }
+    getSpecificBankTransaction(CategoryModel categoryModel) {
+     _specificBankTransactionsList?.clear();
 
-     });
+     _specificBankTransactionsList = transactionsList
+         ?.where((transaction) =>
+     transaction.transactionCategoryId == categoryModel.cat_id)
+         .map((transaction) => TransactionModel(
+       transactionId: transaction.transactionId,
+       transactionAmount: transaction.transactionAmount,
+       transactionCategoryId: transaction.transactionCategoryId,
+       transactionTime: transaction.transactionTime,
+       transactionType: transaction.transactionType,
+       transactionName: transaction.transactionName,
+       transactionDate: transaction.transactionDate,
+     ))
+         .toList();
+
+     print("Specific Transactions: ${_specificBankTransactionsList?.length}");
      update();
    }
-  //
+
+//
   //
   //  bool? containsTransaction(TransactionModel transactionModel) {
   //    return transactionsList?.any((b) => b.transactionCategoryId == transactionModel.transactionCategoryId);

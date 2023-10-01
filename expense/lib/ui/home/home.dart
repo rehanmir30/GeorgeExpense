@@ -4,9 +4,13 @@ import 'package:d_chart/ordinal/pie.dart';
 import 'package:expense/AppColors/colors.dart';
 import 'package:expense/Controllers/DashBoardController/dashboard_controller.dart';
 import 'package:expense/Controllers/sqlController/SqlController.dart';
+import 'package:expense/Models/transaction_model.dart';
+import 'package:expense/ui/home/Calculator%20Screen/credit_calculator.dart';
 import 'package:expense/ui/home/CreateCategory/category_transaction_screen.dart';
 import 'package:expense/ui/home/CreateCategory/create_category_screen.dart';
 import 'package:expense/ui/home/CreateCategory/sub_categories.dart';
+import 'package:expense/ui/home/Credit%20And%20Advances/credit_and_advances.dart';
+import 'package:expense/ui/home/Funds%20Screen/available_funds_screen.dart';
 import 'package:expense/ui/home/TransactionDetials/GraphicsSummary.dart';
 import 'package:expense/ui/home/TransactionDetials/LastTransactionDetails.dart';
 import 'package:expense/ui/home/TransactionDetials/ProductSummaryScreen.dart';
@@ -14,7 +18,7 @@ import 'package:expense/ui/home/TransactionDetials/Recordator.dart';
 import 'package:expense/ui/home/TransactionDetials/TopMonthExpnses.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:intl/intl.dart';
 import '../../Controllers/DataController/DataController.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
     data.add(OrdinalData(domain: 'Entertainment', measure: 5));
     data.add(OrdinalData(domain: 'Family', measure: 6));
     data.add(OrdinalData(domain: 'Finance', measure: 7));
+    print(DateFormat('yyyy-MMM-dd').format(DateTime.now()));
   }
 
   List<OrdinalData> data = [];
@@ -53,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -129,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen>
                                             onTap: () {
                                               // Handle 'YES' button action
                                               // Get.to(()=>const TopMonthExpenses());
-                                              Get.back();
+                                              Get.to(()=>AvailableFundsScreen());
+                                              // Get.back();
                                             },
                                             child: Container(
                                               alignment: Alignment.center,
@@ -156,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen>
                                           const SizedBox(width: 10),
                                           InkWell(
                                             onTap: () {
-                                              Get.back(); // Close the dialog when 'CANCEL' is tapped
+                                              // Get.back(); // Close the dialog when 'CANCEL' is tapped
+                                              Get.to(()=>const CreditAndAdvances());
                                             },
                                             child: Container(
                                               alignment: Alignment.center,
@@ -195,11 +201,16 @@ class _HomeScreenState extends State<HomeScreen>
                         width: 35,
                         height: 35,
                       ).marginSymmetric(horizontal: 5)),
-                  Image.asset(
-                    "assets/images/calculator.png",
-                    width: 35,
-                    height: 35,
-                  ).marginSymmetric(horizontal: 5),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => CreditCalculator());
+                    },
+                    child: Image.asset(
+                      "assets/images/calculator.png",
+                      width: 35,
+                      height: 35,
+                    ).marginSymmetric(horizontal: 5),
+                  ),
                   InkWell(
                       onTap: () {
                         Get.to(() => const TopMonthExpenses());
@@ -217,37 +228,49 @@ class _HomeScreenState extends State<HomeScreen>
                   return GridView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: controller.categoryModelList?.length??0,
+                    itemCount: controller.categoryModelList?.length ?? 0,
                     itemBuilder: (context, index) {
-                      print('${controller.categoryModelList?[index].cat_image}');
+                      print(
+                          '${controller.categoryModelList?[index].cat_image}');
                       return Container(
-                        padding: (index == controller.categoryModelList!.length-1)
-                            ? const EdgeInsets.all(15)
-                            : const EdgeInsets.all(0),
+                        padding:
+                            (index == controller.categoryModelList!.length - 1)
+                                ? const EdgeInsets.all(15)
+                                : const EdgeInsets.all(0),
                         width: 10,
                         height: 20,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           // borderRadius: BorderRadius.circular(10),
-                          border: (index == controller.categoryModelList!.length-1)
+                          border: (index ==
+                                  controller.categoryModelList!.length - 1)
                               ? Border.all(color: AppColor.kWhite, width: 0)
                               : Border.all(color: AppColor.kBlack, width: 1),
                         ),
                         child: InkWell(
                             overlayColor: const MaterialStatePropertyAll(
                                 Colors.transparent),
-                            onTap: () async{
-                              if (index == controller.categoryModelList!.length-1) {
+                            onTap: () async {
+                              if (index ==
+                                  controller.categoryModelList!.length - 1) {
                                 Get.to(() => const CreateCategoryScreen());
-                              }else{
-                                if(controller.categoryModelList?[index].cat_type==0){
-                                  await Get.find<SqlController>().getSpecificBankTransaction(controller.categoryModelList![index]);
-                                  Get.to(()=>CategoryTransactionScreen(categoryModel: controller.categoryModelList?[index]));
-                                }else{
-                                  Get.to(()=>SubCategories(controller.categoryModelList?[index]));
+                              } else {
+                                if (controller
+                                        .categoryModelList?[index].cat_type ==
+                                    0) {
+                                  await Get.find<SqlController>()
+                                      .getSpecificBankTransaction(
+                                          controller.categoryModelList![index]);
+                                  Get.to(() => CategoryTransactionScreen(
+                                      categoryModel: controller
+                                          .categoryModelList?[index]));
+                                } else {
+                                  await Get.find<SqlController>()
+                                      .getSelectedSubCategories(
+                                          controller.categoryModelList?[index]);
+                                  Get.to(() => SubCategories(
+                                      controller.categoryModelList?[index]));
                                 }
-
-
                               }
                             },
                             child: Image.asset(
@@ -318,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
                       "Monthly income:",
                       style:
@@ -327,12 +350,20 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(
                       width: 15,
                     ),
-                    Expanded(
-                      child: SizedBox(
-                          height: 50,
-                          // width: 180,
-                          child: TextField()),
-                    ),
+                   GetBuilder<SqlController>(builder: (sqlController) {
+                     return  Expanded(
+                       child: SizedBox(
+                         height: 30,
+                         child: TextField(
+                           controller: TextEditingController(
+                             text: "${sqlController.monthlyIncome}",
+                           ),
+                           style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),
+                         ),
+                       ),
+                     );
+                   },),
+
                   ],
                 ),
               ).marginSymmetric(horizontal: 20),
@@ -343,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children:  [
                     Text(
                       "Monthly expense:",
                       style:
@@ -352,12 +383,19 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(
                       width: 15,
                     ),
-                    Expanded(
-                      child: SizedBox(
-                          height: 50,
-                          // width: 180,
-                          child: TextField()),
-                    ),
+                    GetBuilder<SqlController>(builder: (sqlController) {
+                      return Expanded(
+                        child: SizedBox(
+                            height: 30,
+                            // width: 180,
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: "${sqlController.monthlyExpense}",
+                              ),
+                              style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),
+                            )),
+                      );
+                    },)
                   ],
                 ),
               ).marginSymmetric(horizontal: 20),
@@ -368,7 +406,7 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children:  [
                     Text(
                       "Current balance:",
                       style: TextStyle(
@@ -376,12 +414,16 @@ class _HomeScreenState extends State<HomeScreen>
                           fontSize: 22,
                           color: AppColor.kBlue),
                     ),
-                    SizedBox(
-                        height: 50,
-                        width: 180,
-                        child: TextField(
-                          decoration: InputDecoration(border: InputBorder.none),
-                        )),
+                    GetBuilder<SqlController>(builder: (controller) {
+                      return SizedBox(
+                          height: 30,
+                          width: 180,
+                          child: TextField(
+                            style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),
+                            controller: TextEditingController(text: ((controller.monthlyIncome??0.0)-(controller.monthlyExpense??0.0)).toString()),
+                            decoration: InputDecoration(border: InputBorder.none),
+                          ));
+                    },),
                   ],
                 ),
               ).marginSymmetric(horizontal: 20),
@@ -454,22 +496,24 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   RichText(
                       text: TextSpan(
-                          text: "Today ",
+                          text:
+                              "${(DateFormat('yyyy-MMM-dd').format(Get.find<SqlController>().transactionsList?.last.transactionDate) == DateFormat('yyyy-MMM-dd').format(DateTime.now())) ? "Today " : "${DateFormat('dd MMM').format(Get.find<SqlController>().transactionsList?.last.transactionDate)} "}",
                           style: const TextStyle(
                               color: AppColor.kBlue,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                           children: [
                         TextSpan(
-                          text: "Candy",
+                          text:
+                              "${Get.find<SqlController>().transactionsList?.last.transactionName}",
                           style: TextStyle(
                               color: AppColor.kBlack.withOpacity(0.6),
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         )
                       ])),
-                  const Text(
-                    '\$60000',
+                  Text(
+                    '\$ ${Get.find<SqlController>().transactionsList?.last.transactionAmount}',
                     style: TextStyle(
                         color: AppColor.kRed,
                         fontSize: 20,
@@ -482,22 +526,29 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   RichText(
                       text: TextSpan(
-                          text: "12 Jun ",
+                          text:
+                              "${DateFormat('dd MMM').format(Get.find<SqlController>().transactionsList?[(Get.find<SqlController>().transactionsList!.length - 2) ?? 0].transactionDate ?? DateTime.now())} ",
                           style: const TextStyle(
                               color: AppColor.kBlue,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                           children: [
                         TextSpan(
-                          text: "Hotdog",
+                          text: Get.find<SqlController>()
+                                  .transactionsList?[Get.find<SqlController>()
+                                          .transactionsList!
+                                          .length -
+                                      2]
+                                  .transactionName ??
+                              "",
                           style: TextStyle(
                               color: AppColor.kBlack.withOpacity(0.6),
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         )
                       ])),
-                  const Text(
-                    '\$60000',
+                  Text(
+                    '\$ ${Get.find<SqlController>().transactionsList?[Get.find<SqlController>().transactionsList!.length - 2].transactionAmount ?? ""}',
                     style: TextStyle(
                         color: AppColor.kRed,
                         fontSize: 20,
@@ -584,10 +635,11 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ).marginOnly(bottom: 15, left: 10, right: 10),
 
-              ListView.builder(
+            GetBuilder<SqlController>(builder: (controller) {
+              return   ListView.builder(
                 primary: false,
                 shrinkWrap: true,
-                itemCount: 6,
+                itemCount: controller.topMonthExpense.length,
                 itemBuilder: (context, index) {
                   return SizedBox(
                     height: 60,
@@ -612,15 +664,15 @@ class _HomeScreenState extends State<HomeScreen>
                             const SizedBox(
                               width: 10,
                             ),
-                            const Text(
-                              'TOP MONTH EXPENSES:',
+                             Text(
+                              '${controller.topMonthExpense[index].categoryName}: ',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        const Text(
-                          "\$25`00000",
+                         Text(
+                          "\$ ${controller.topMonthExpense[index].totalExpense}",
                           style: TextStyle(
                               color: AppColor.kRed,
                               fontSize: 18,
@@ -630,7 +682,8 @@ class _HomeScreenState extends State<HomeScreen>
                     ).marginOnly(bottom: 15, left: 10, right: 10),
                   );
                 },
-              ),
+              );
+            },),
               const SizedBox(
                 height: 5,
               ),

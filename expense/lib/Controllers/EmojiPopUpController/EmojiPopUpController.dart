@@ -1,6 +1,8 @@
 
 import 'package:get/get.dart';
 
+import '../../Models/category.dart';
+
 class EmojiPopUpController extends GetxController{
 
 
@@ -777,15 +779,21 @@ String? get selectedEmoji=>_selectedEmoji;
 String? _globalCategories;
 String? get globalCategories=>_globalCategories;
 
-List<String>? _selectedList;
-List<String>? get selectedList=>_selectedList;
+// List<CategoryModel>? _selectedCatSubCatList;
+// List<CategoryModel>? get selectedCatSubCatList=>_selectedCatSubCatList;
+
+// String? _selectedList;
+// String? get selectedList=>_selectedList;
 
 
 
-onListUpdate(List<String>? list)async{
-  _selectedList = list;
-  update();
-}
+
+
+
+// onListUpdate(List<String>? list)async{
+//   _selectedCatSubCatList = list;
+//   update();
+// }
 
 onChangeGlobleCategories(String? value)async{
 _globalCategories = value;
@@ -796,7 +804,7 @@ _globalCategories = value;
 
 setSelectedImage(image)async{
   _selectedEmoji = image;
-  selectedList?.add(_selectedEmoji??"");
+  // selectedList?.add(_selectedEmoji??"");
   update();
 }
 
