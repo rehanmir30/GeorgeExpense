@@ -28,8 +28,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   TabController? tabController;
 
   @override
@@ -356,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen>
                          height: 30,
                          child: TextField(
                            controller: TextEditingController(
-                             text: "${sqlController.monthlyIncome}",
+                             text: "${sqlController.monthlyIncome??0.0}",
                            ),
                            style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),
                          ),
@@ -390,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen>
                             // width: 180,
                             child: TextField(
                               controller: TextEditingController(
-                                text: "${sqlController.monthlyExpense}",
+                                text: "${sqlController.monthlyExpense??0.0}",
                               ),
                               style: TextStyle(color: AppColor.kBlack,fontWeight: FontWeight.bold,fontSize: 18),
                             )),
@@ -491,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ).marginOnly(bottom: 15, left: 10, right: 10),
 
-              Row(
+              (Get.find<SqlController>().transactionsList!=null  || (Get.find<SqlController>().transactionsList?.isNotEmpty??false))?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RichText(
@@ -520,8 +519,10 @@ class _HomeScreenState extends State<HomeScreen>
                         fontWeight: FontWeight.bold),
                   ),
                 ],
-              ).marginSymmetric(horizontal: 10, vertical: 5),
-              Row(
+              ).marginSymmetric(horizontal: 10, vertical: 5)
+              :SizedBox.shrink(),
+
+              (Get.find<SqlController>().transactionsList!=null) ?Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RichText(
@@ -555,7 +556,8 @@ class _HomeScreenState extends State<HomeScreen>
                         fontWeight: FontWeight.bold),
                   ),
                 ],
-              ).marginSymmetric(horizontal: 10, vertical: 5),
+              ).marginSymmetric(horizontal: 10, vertical: 5)
+                  :Center(child: Text('No last transaction found'),),
               const SizedBox(
                 height: 10,
               ),
@@ -636,6 +638,9 @@ class _HomeScreenState extends State<HomeScreen>
               ).marginOnly(bottom: 15, left: 10, right: 10),
 
             GetBuilder<SqlController>(builder: (controller) {
+              if(controller.topMonthExpense==null || (controller.topMonthExpense?.isEmpty??true)){
+                return Center(child: Text("No transaction found"),);
+              }
               return   ListView.builder(
                 primary: false,
                 shrinkWrap: true,
